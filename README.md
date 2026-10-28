@@ -34,15 +34,20 @@ Linux'da `cargo check` uchun: `libwebkit2gtk-4.1-dev libappindicator3-dev librsv
 
 Domen: `my-desk.tajriba24.uz` (A yozuv → `95.130.227.92`). Batafsil: `docs/07-SERVER-VA-DEPLOY.md`.
 
-1. Oʻz kompyuteringizda kalit yarating: `ssh-keygen -t ed25519 -C "github-deploy" -f deploy_key` (parolsiz).
-2. Serverga `deploy/setup-server.sh` ni nusxalab, root sifatida bir marta ishga tushiring:
-   `DEPLOY_PUBKEY="$(cat deploy_key.pub)" DOMAIN=my-desk.tajriba24.uz bash setup-server.sh`.
-   Skript oxirida admin paroli (`admin / …`) bir marta chiqadi — saqlab qoʻying.
-3. GitHub → Settings → Secrets and variables → Actions: `SSH_HOST` (`95.130.227.92`), `SSH_USER` (`deploy`), `SSH_PRIVATE_KEY` (`deploy_key` mazmuni), `DOMAIN` (`my-desk.tajriba24.uz`).
-4. Actions → «Deploy server» → Run workflow. Tekshiruv: `https://my-desk.tajriba24.uz/health` → `ok`.
-5. `ssh deploy@95.130.227.92` kalit bilan ishlashiga ishonch hosil qilgach, `HARDEN_SSH=yes` bilan skriptni qayta ishga tushirib parol bilan kirishni oʻchiring.
+**Hozirgi holat.** Server qoʻlda joylashtirilgan va ishlayapti: `https://my-desk.tajriba24.uz/health` → `{"status":"ok","store":"postgres",…}`. Serverda boshqa saytlar ham bor, shuning uchun 80/443 portni umumiy Caddy ushlab turadi va u `my-desk` domenini `api` konteyneriga yoʻnaltiradi (`deploy/Caddyfile` — namuna).
 
-Parol va kalitlarni repozitoriyga yozmang. `deploy/.env` faqat serverda turadi.
+**Yangilash (oddiy yoʻl).** Serverda repozitoriy papkasida:
+
+```bash
+git pull
+cd deploy && docker compose --env-file .env up -d --build api
+```
+
+`api` konteyneri ishga tushganda `prisma migrate deploy` ni oʻzi bajaradi, shuning uchun yangi migratsiyalar (`0002_task_assignee_list`, `0003_settings_extra`) avtomatik qoʻllanadi. Natijani tekshirish: `curl -fsS https://my-desk.tajriba24.uz/health`.
+
+**Avtomatik yangilash (ixtiyoriy).** `.github/workflows/deploy-server.yml` `main` ga push boʻlganda serverga rsync + `docker compose up -d --build` qiladi. Uning uchun GitHub → Settings → Secrets → Actions: `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY` (parolsiz ED25519 deploy kaliti), `DOMAIN`. Workflow serverdagi papka tuzilmasiga (`/opt/my-desktop`) bogʻliq: agar server boshqacha tuzilgan boʻlsa, workflowdagi yoʻllarni moslang.
+
+**Xavfsizlik.** Admin paroli va boshqa sirlar chat yoki repozitoriyga yozilmaydi; `deploy/.env` faqat serverda turadi. Birinchi kirishdan keyin admin parolini almashtiring.
 
 ## Ichki brauzer: ma'lum cheklovlar
 
@@ -50,3 +55,15 @@ Parol va kalitlarni repozitoriyga yozmang. `deploy/.env` faqat serverda turadi.
 - **Linux (WebKitGTK):** Tauri child webview'larni joylashtirishni qoʻllamaydi — ular asosiy webview ostida ketma-ket turadi. Brauzer Linux'da ishlaydi (sahifalar yuklanadi, hodisalar keladi), lekin joylashuv toʻgʻri boʻlmaydi. Asosiy platforma — Windows.
 - `target=_blank` / `window.open` → yangi tab (`on_new_window`) kodda bor, lekin foydalanuvchi bosishini talab qiladi: avtomatlashtirilgan sinovda tekshirib boʻlmadi, Windows'da qoʻlda tekshirish kerak (Telegram, WhatsApp, YouTube).
 - Sessiya (cookie) tizim webview ma'lumotlar papkasida saqlanadi, shuning uchun Telegram/WhatsApp'ga bir marta kirish yetarli.
+
+## Desktop ilovani chiqarish (reliz)
+
+`v0.2.0` kabi teg qoʻyilsa, `.github/workflows/release-desktop.yml` Windows (`.msi`, `.exe`), macOS (`.dmg`) va Linux (`.deb`, `.AppImage`) oʻrnatmalarini quradi va GitHub Release ga qoʻyadi. Oʻrnatilgan ilovalar `latest.json` orqali yangilanishni oʻzlari topadi (Sozlamalar → Tizim).
+
+Bir martalik tayyorgarlik:
+
+```bash
+npx tauri signer generate -w updater.key
+```
+
+Keyin GitHub Secrets ga: `TAURI_SIGNING_PRIVATE_KEY` (`updater.key` mazmuni), `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`, `TAURI_UPDATER_PUBKEY` (`updater.key.pub` mazmuni). Kalitni repozitoriyga qoʻymang. Windows kod imzosi (SmartScreen ogohlantirishini yoʻqotish uchun) sertifikat olingach alohida qoʻshiladi.

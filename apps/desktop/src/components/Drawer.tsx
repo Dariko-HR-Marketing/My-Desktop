@@ -70,7 +70,9 @@ export function Drawer({ open, onClose, title, children }: DrawerProps) {
           <h2 className="drawer__title">{title}</h2>
           <IconButton label={t('common.close')} icon={X} onClick={onClose} />
         </header>
-        <div className="drawer__body">{children}</div>
+        <div className="drawer__body" tabIndex={0}>
+          {children}
+        </div>
       </div>
     </div>,
     document.body,

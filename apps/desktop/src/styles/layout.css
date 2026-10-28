@@ -79,7 +79,7 @@
   width: 36px;
   height: 36px;
   border-radius: var(--radius-md);
-  background: var(--accent-strong);
+  background: var(--app-gov);
   color: var(--on-solid);
   font-weight: 700;
 }
@@ -160,6 +160,9 @@ button.sidebar__group-title {
   display: block;
   color: var(--nav-muted);
   font-size: var(--fs-caption);
+}
+.nav-item[aria-current='page'] .nav-item__sub {
+  color: var(--nav-text);
 }
 .nav-item__tile {
   display: grid;

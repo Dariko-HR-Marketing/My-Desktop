@@ -3,5 +3,10 @@
   "identifier": "default",
   "description": "Permissions for the main (React) webview only. Tab webviews of the internal browser load external sites and are deliberately NOT listed here.",
   "webviews": ["main"],
-  "permissions": ["core:default", "notification:default"]
+  "permissions": [
+    "core:default",
+    "notification:default",
+    "updater:default",
+    "process:allow-restart"
+  ]
 }

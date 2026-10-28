@@ -20,6 +20,8 @@ tauri-plugin-notification = "2"
 tauri-plugin-single-instance = "2"
 tauri-plugin-autostart = "2"
 tauri-plugin-window-state = "2"
+tauri-plugin-updater = "2"
+tauri-plugin-process = "2"
 
 # OS credential stores: Windows Credential Manager, macOS Keychain, Linux kernel keyring / Secret Service.
 [target.'cfg(target_os = "windows")'.dependencies]
@@ -30,3 +32,11 @@ keyring = { version = "3", features = ["apple-native"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 keyring = { version = "3", features = ["linux-native-sync-persistent"] }
+
+# Small, fast installers: size-optimised, whole-program LTO, no debug symbols.
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"

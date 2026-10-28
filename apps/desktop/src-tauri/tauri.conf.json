@@ -14,13 +14,27 @@
       {
         "label": "main",
         "title": "Ish maydoni",
-        "width": 1440,
-        "height": 900,
-        "minWidth": 360,
+        "width": 1280,
+        "height": 800,
+        "minWidth": 900,
         "minHeight": 600
       }
     ],
-    "security": { "csp": null }
+    "security": {
+      "csp": null
+    }
   },
-  "bundle": { "active": true, "targets": "all", "icon": ["icons/icon.png"] }
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": ["icons/icon.png"]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "REPLACE_WITH_UPDATER_PUBLIC_KEY_IN_RELEASE_CI",
+      "endpoints": [
+        "https://github.com/Dariko-HR-Marketing/My-Desktop/releases/latest/download/latest.json"
+      ]
+    }
+  }
 }

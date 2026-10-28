@@ -8,6 +8,7 @@ import { APP_VERSION, serverUrl } from '../../lib/config';
 import { t, tf, type MessageKey } from '../../lib/i18n';
 import { useBreakpoint, type Density, type Theme } from '../../lib/layout';
 import { isTauri } from '../../lib/platform';
+import { checkForUpdate, installUpdate, type UpdateCheck } from '../../lib/updater';
 import { movePinned, togglePinned, visibleAppKeys } from '../../lib/settings';
 import { updateSettings, useSettings } from '../../lib/settingsSync';
 import { APPS, appByKey } from '../browser/networks';
@@ -212,6 +213,47 @@ function MenuApps() {
   );
 }
 
+function UpdateRow() {
+  const [state, setState] = useState<UpdateCheck | 'checking' | 'installing' | null>(null);
+  if (!isTauri()) return null;
+  return (
+    <Field
+      label={t('settings.update')}
+      note={
+        typeof state === 'object' && state?.status === 'none'
+          ? t('settings.update.none')
+          : typeof state === 'object' && state?.status === 'error'
+            ? t('settings.update.error')
+            : undefined
+      }
+    >
+      <div className="row">
+        {typeof state === 'object' && state?.status === 'available' ? (
+          <Button
+            variant="primary"
+            onClick={() => {
+              setState('installing');
+              void installUpdate(state.update).catch(() => setState({ status: 'error' }));
+            }}
+          >
+            {tf('settings.update.install', { v: state.version })}
+          </Button>
+        ) : (
+          <Button
+            disabled={state === 'checking' || state === 'installing'}
+            onClick={() => {
+              setState('checking');
+              void checkForUpdate().then(setState);
+            }}
+          >
+            {state === 'installing' ? t('settings.update.installing') : t('settings.update.check')}
+          </Button>
+        )}
+      </div>
+    </Field>
+  );
+}
+
 function SystemSection() {
   const [autostart, setAutostart] = useState<boolean | null>(null);
   const [url, setUrl] = useState(serverUrl());
@@ -261,6 +303,7 @@ function SystemSection() {
           onChange={(v) => void toggleAutostart(v)}
         />
       </Field>
+      <UpdateRow />
       <Field label={t('settings.server')} note={t('settings.serverNote')}>
         <div className="row">
           <input

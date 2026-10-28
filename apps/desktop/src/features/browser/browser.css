@@ -20,6 +20,9 @@
   background: var(--neutral-chip);
 }
 .tabstrip__tabs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
   display: flex;
   align-items: flex-end;
   gap: 2px;

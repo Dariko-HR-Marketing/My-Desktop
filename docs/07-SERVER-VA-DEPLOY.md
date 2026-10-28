@@ -1,5 +1,7 @@
 # 07 · Server va joylashtirish (deploy)
 
+> **Amaldagi holat (2026-10-28):** server qoʻlda joylashtirilgan. Serverda boshqa saytlar ham ishlaydi, shuning uchun 80/443 portni umumiy Caddy ushlaydi va `my-desk.tajriba24.uz` ni `api` konteyneriga yoʻnaltiradi; ushbu hujjatdagi `docker-compose.yml` dagi alohida `caddy` xizmati faqat boʻsh serverda ishlatiladi. Yangilash tartibi — `README.md` dagi «Serverga joylashtirish» boʻlimi.
+
 ## 1. Server
 
 | Parametr | Qiymat |

@@ -331,6 +331,14 @@ const uz = {
   'settings.privacyText':
     'Xodimning shaxsiy tarmoq faoliyati (qaysi sayt, qancha vaqt) rahbarga koʻrsatilmaydi. Ichki brauzer tarixi serverga yuborilmaydi.',
   'settings.version': 'Versiya',
+  'settings.update': 'Dastur yangilanishi',
+  'settings.update.check': 'Yangilanishni tekshirish',
+  'settings.update.install': '{v} versiyani oʻrnatish va qayta ishga tushirish',
+  'settings.update.installing': 'Oʻrnatilmoqda…',
+  'settings.update.none': 'Eng yangi versiya oʻrnatilgan.',
+  'settings.update.error': 'Yangilanishni tekshirib boʻlmadi. Keyinroq urinib koʻring.',
+  'update.available':
+    'Yangi versiya {v} mavjud. Sozlamalar → Tizim va maxfiylik boʻlimida yangilang.',
 
   'a11y.skip': 'Asosiy mazmunga oʻtish',
 } as const;

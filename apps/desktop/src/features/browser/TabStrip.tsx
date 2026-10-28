@@ -15,7 +15,7 @@ export function TabStrip() {
 
   return (
     <div className="tabstrip">
-      <div className="tabstrip__tabs" role="tablist" aria-label={t('browser.tabs')}>
+      <ul className="tabstrip__tabs" aria-label={t('browser.tabs')}>
         {tabs.map((tab, i) => {
           const group = tab.groupId ? GROUPS[tab.groupId] : null;
           const startsGroup = tab.groupId && tabs[i - 1]?.groupId !== tab.groupId;
@@ -23,19 +23,18 @@ export function TabStrip() {
           return (
             <Fragment key={tab.id}>
               {startsGroup && group && (
-                <span className="tabgroup" style={{ background: group.color }}>
+                <li className="tabgroup" style={{ background: group.color }}>
                   {t(`browser.group.${tab.groupId}` as 'browser.group.muloqot')}
-                </span>
+                </li>
               )}
-              <div
+              <li
                 className={cx('tab', active && 'tab--active', tab.sleeping && 'tab--sleeping')}
                 style={group ? { ['--tab-group' as string]: group.color } : undefined}
                 data-grouped={group ? 'true' : undefined}
               >
                 <button
                   type="button"
-                  role="tab"
-                  aria-selected={active}
+                  aria-current={active ? 'true' : undefined}
                   className="tab__main"
                   onClick={() => activate(tab.id)}
                   title={tab.url || undefined}
@@ -52,11 +51,11 @@ export function TabStrip() {
                 >
                   <X size={14} strokeWidth={2} aria-hidden="true" />
                 </button>
-              </div>
+              </li>
             </Fragment>
           );
         })}
-      </div>
+      </ul>
       <IconButton
         className="tabstrip__new"
         label={`${t('browser.newTab')} (Ctrl+T)`}

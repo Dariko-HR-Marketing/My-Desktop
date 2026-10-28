@@ -6,6 +6,9 @@ import { DEMO_SETTINGS, DEMO_USER } from '../../lib/demoData';
 import { secureStorage } from '../../lib/platform';
 import { useSession } from '../../state/session';
 import { adoptServerSettings } from '../../lib/settingsSync';
+import { checkForUpdate } from '../../lib/updater';
+import { tf } from '../../lib/i18n';
+import { useToast } from '../../state/toast';
 import { useData } from '../../state/data';
 
 const TOKEN_KEY = 'session-token';
@@ -69,4 +72,14 @@ export async function login(loginName: string, password: string): Promise<void> 
 
 export function enterDemo(): void {
   useSession.getState().enterDemo(DEMO_USER, DEMO_SETTINGS);
+}
+
+/** Once per app start, after sign-in: tell the user if a newer version is available. */
+let updateChecked = false;
+export async function announceUpdate(): Promise<void> {
+  if (updateChecked) return;
+  updateChecked = true;
+  const result = await checkForUpdate();
+  if (result.status === 'available')
+    useToast.getState().push(tf('update.available', { v: result.version }));
 }

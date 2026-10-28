@@ -3,12 +3,16 @@ import { wsUrl } from '../lib/config';
 import { RealtimeClient } from '../lib/realtime';
 import { useSession } from '../state/session';
 import { useData } from '../state/data';
-import { logout } from '../features/auth/auth';
+import { announceUpdate, logout } from '../features/auth/auth';
 
 const REFRESH_AFTER_MS = 60_000;
 
 /** While signed in: load data, keep it live over WebSocket, and refresh it when the app regains focus or network. */
 export function useDataSync(): void {
+  useEffect(() => {
+    void announceUpdate();
+  }, []);
+
   const token = useSession((s) => s.token);
   const demo = useSession((s) => s.demo);
   const lastLoad = useRef(0);
