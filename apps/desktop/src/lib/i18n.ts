@@ -68,6 +68,94 @@ const uz = {
   'settings.densityNote':
     'Ixcham rejim faqat sichqoncha bilan ishlaydigan keng oynalarda (≥ 1024 px) qoʻllanadi.',
 
+  'greet.morning': 'Xayrli tong, {name}',
+  'greet.day': 'Xayrli kun, {name}',
+  'greet.evening': 'Xayrli kech, {name}',
+  'summary.tasksLeft': '{n} ta vazifa qoldi',
+  'summary.overdue': '{n} tasi kechikkan',
+  'summary.meeting': '{time} da uchrashuv',
+  'summary.allDone': 'Bugun hamma ishlar bajarildi',
+  'summary.noTasks': 'Hozircha ochiq vazifa yoʻq',
+
+  'home.quick.newTask': 'Yangi vazifa',
+  'home.quick.browser': 'Brauzerni ochish',
+  'home.quick.document': 'Hujjat yaratish',
+  'home.kpi.today': 'Bugungi vazifalar',
+  'home.kpi.overdue': 'Muddati oʻtgan',
+  'home.kpi.overdueHint': 'Ijro nazorati →',
+  'home.kpi.signature': 'Imzo kutmoqda',
+  'home.kpi.signatureHint': 'Hujjat aylanishi modulidan',
+  'home.kpi.plan': 'Oylik ish rejasi',
+  'home.kpi.arrival': 'Kelgan vaqtingiz',
+  'home.kpi.onTime': 'Oʻz vaqtida',
+  'home.sample': 'Namuna maʼlumot',
+  'home.attention': 'Diqqat talab qiladi',
+  'home.attention.empty': 'Shoshilinch ish yoʻq',
+  'home.attention.emptyText': 'Muddati oʻtgan yoki bugun tugaydigan ish qolmadi.',
+  'home.attention.open': 'Ochish',
+  'home.today': 'Bugungi vazifalar',
+  'home.today.empty': 'Bugunga vazifa yoʻq',
+  'home.today.emptyText': 'Yangi vazifa qoʻshing yoki ertangi rejaga qarang.',
+  'home.today.allDone': 'Bugun hamma ishlar bajarildi',
+  'home.today.allDoneText': 'Yaxshi ish! Yangi vazifa qoʻshishingiz mumkin.',
+  'home.today.markDone': 'Bajarildi deb belgilash',
+  'home.today.markTodo': 'Qayta ochish',
+  'home.messages': 'Xabarlar',
+  'home.messages.new': '{n} ta yangi',
+  'home.messages.none': 'Yangi xabar yoʻq',
+  'home.schedule': 'Bugungi jadval',
+  'home.schedule.join': 'Qoʻshilish',
+  'home.schedule.empty': 'Bugun uchrashuv yoʻq',
+  'home.weather': 'Ob-havo',
+  'home.currency': 'Valyuta kurslari',
+  'home.currency.source': 'MB',
+  'home.updated': 'yangilandi {time}',
+  'home.stale': 'eskirgan maʼlumot, {time}',
+  'home.tomorrow': 'Ertaga {n}°',
+
+  'source.PLAN': 'Ish rejasi',
+  'source.MANAGER': 'Rahbar topshirigʻi',
+  'source.PERSONAL': 'Shaxsiy',
+  'source.MODULE': 'Hujjat',
+  'due.overdue': 'Kechikkan',
+  'due.today': 'Bugun',
+  'due.yesterday': 'Kecha',
+
+  'state.error': 'Maʼlumotni yuklab boʻlmadi',
+  'state.errorText': 'Serverda xatolik. Keyinroq urinib koʻring.',
+  'state.offline': 'Internet yoʻq. {time} holatidagi maʼlumot koʻrsatilmoqda',
+  'state.demo': 'Demo rejim: server bilan ulanmagan, namunaviy maʼlumotlar koʻrsatilmoqda',
+  'state.undone': 'Oʻzgarish saqlanmadi, holat qaytarildi',
+
+  'login.heading': 'Ish maydoniga kirish',
+  'login.lead': 'Bitta kirish — barcha tizimlar.',
+  'login.tab.eimzo': 'E-IMZO kaliti',
+  'login.tab.password': 'Login va parol',
+  'login.tabs': 'Kirish usuli',
+  'login.eimzoSoon':
+    'E-IMZO bilan kirish tez orada ishga tushadi. Hozircha login va paroldan foydalaning.',
+  'login.login': 'Login',
+  'login.password': 'Parol',
+  'login.submit': 'Kirish',
+  'login.submitting': 'Kirilmoqda…',
+  'login.qr': 'Mobil ilova orqali QR-kod bilan (tez orada)',
+  'login.secure':
+    'Maʼlumotlaringiz xavfsiz saqlanadi: kirish belgisi tizimning himoyalangan omborida turadi.',
+  'login.errLogin': 'Loginni kiriting',
+  'login.errPassword': 'Parolni kiriting',
+  'login.errNetwork': 'Serverga ulanib boʻlmadi. Internetni tekshirib, qayta urining.',
+  'login.errRate': 'Juda koʻp urinish. Bir daqiqadan soʻng qayta urining.',
+  'login.errServer': 'Serverda xatolik. Keyinroq urinib koʻring.',
+  'login.demo': 'Demo rejimda davom etish',
+  'login.language': 'Til',
+  'login.help': 'Yordam: IT boʻlimi',
+  'login.version': 'Versiya {v}',
+  'login.pitch1': 'Bugungi ishlar, hujjatlar va xabarlar bitta oynada',
+  'login.pitch2': 'Bir marta kirish — keyin barcha tizimlar parolsiz',
+  'login.pitch3': 'Telegram, WhatsApp va saytlar — dastur ichida',
+  'auth.logout': 'Chiqish',
+  'auth.loading': 'Yuklanmoqda',
+
   'a11y.skip': 'Asosiy mazmunga oʻtish',
 } as const;
 
@@ -75,4 +163,9 @@ export type MessageKey = keyof typeof uz;
 
 export function t(key: MessageKey): string {
   return uz[key];
+}
+
+/** Message with `{name}` placeholders. */
+export function tf(key: MessageKey, vars: Record<string, string | number>): string {
+  return uz[key].replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ''));
 }

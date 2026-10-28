@@ -16,12 +16,15 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { App } from './app/App';
+import { restoreSession } from './features/auth/auth';
 import { applyAppearance } from './lib/appearance';
 import { useUi } from './state/ui';
 
 // Apply the saved theme before the first paint to avoid a light flash.
 const { theme, density } = useUi.getState();
 applyAppearance(theme, density);
+
+void restoreSession();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -6,6 +6,7 @@ import { ModulePage } from '../features/modules/ModulePage';
 import { SettingsPage } from '../features/settings/SettingsPage';
 import { TasksPage } from '../features/tasks/TasksPage';
 import { AppShell } from './AppShell';
+import { RequireAuth } from './RequireAuth';
 import { NotFoundPage } from './NotFoundPage';
 import { UiKitPage } from './UiKitPage';
 
@@ -13,7 +14,13 @@ export function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route element={<AppShell />}>
+      <Route
+        element={
+          <RequireAuth>
+            <AppShell />
+          </RequireAuth>
+        }
+      >
         <Route index element={<HomePage />} />
         <Route path="tasks" element={<TasksPage />} />
         <Route path="browser" element={<BrowserPage />} />

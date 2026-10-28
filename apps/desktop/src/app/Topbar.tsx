@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Bell, Search, Sparkles } from 'lucide-react';
+import { Bell, LogOut, Search, Sparkles } from 'lucide-react';
 import { IconButton } from '../components';
 import { t } from '../lib/i18n';
 import { formatDate, formatTime, initials } from '../lib/format';
+import { logout } from '../features/auth/auth';
 import { useSession } from '../state/session';
 
 function Clock() {
@@ -41,6 +42,7 @@ export function Topbar() {
           disabled
         />
         <IconButton label={t('top.notifications')} icon={Bell} />
+        <IconButton label={t('auth.logout')} icon={LogOut} onClick={() => void logout()} />
         <Link to="/settings" className="avatar" aria-label={t('top.profile')}>
           {initials(user?.fullName)}
         </Link>

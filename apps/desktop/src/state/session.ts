@@ -1,19 +1,33 @@
 import { create } from 'zustand';
 import type { User, UserSettings } from '@ish-maydoni/shared';
 
+export type SessionStatus = 'loading' | 'authed' | 'anon';
+
 interface SessionState {
+  status: SessionStatus;
   token: string | null;
   user: User | null;
   settings: UserSettings | null;
+  /** No server: local sample data only, nothing is sent anywhere. */
+  demo: boolean;
   setSession(token: string, user: User, settings: UserSettings | null): void;
-  clear(): void;
+  setUser(user: User, settings: UserSettings | null): void;
+  setSettings(settings: UserSettings): void;
+  enterDemo(user: User, settings: UserSettings): void;
+  setAnon(): void;
 }
 
-// In memory only for now: the token goes to secure storage together with the login flow (stage 4).
+// The token itself lives in the OS credential store (lib/platform.ts); this is only its in-memory copy.
 export const useSession = create<SessionState>()((set) => ({
+  status: 'loading',
   token: null,
   user: null,
   settings: null,
-  setSession: (token, user, settings) => set({ token, user, settings }),
-  clear: () => set({ token: null, user: null, settings: null }),
+  demo: false,
+  setSession: (token, user, settings) =>
+    set({ status: 'authed', token, user, settings, demo: false }),
+  setUser: (user, settings) => set({ user, settings }),
+  setSettings: (settings) => set({ settings }),
+  enterDemo: (user, settings) => set({ status: 'authed', token: null, user, settings, demo: true }),
+  setAnon: () => set({ status: 'anon', token: null, user: null, settings: null, demo: false }),
 }));

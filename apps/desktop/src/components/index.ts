@@ -11,3 +11,4 @@ export { Skeleton } from './Skeleton';
 export { Switch } from './Switch';
 export { Tabs } from './Tabs';
 export { Tooltip } from './Tooltip';
+export { ToastHost } from './Toast';

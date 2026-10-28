@@ -1,0 +1,109 @@
+.login {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: 100%;
+}
+.login__pitch {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-6);
+  padding: var(--space-8);
+  background: var(--nav-bg);
+  color: var(--nav-text);
+}
+.login__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--nav-text-active);
+  font-weight: 600;
+}
+.login__pitch-title {
+  max-width: 420px;
+  color: var(--nav-text-active);
+  font-size: var(--fs-display);
+  font-weight: var(--fw-display);
+  line-height: var(--lh-display);
+}
+.login__pitch-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.login__pitch-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.login__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  padding: var(--space-6) var(--page-margin, 24px);
+}
+.login__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: 440px;
+  padding: var(--space-6);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
+.login__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.login__submit {
+  height: 50px;
+  width: 100%;
+}
+.login__note {
+  margin: 0;
+}
+.login__foot {
+  display: flex;
+  gap: var(--space-5);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.field label {
+  font-weight: 600;
+}
+.input {
+  height: 48px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.input[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+.field__error {
+  margin: 0;
+  color: var(--danger);
+  font-size: var(--fs-caption);
+  font-weight: 500;
+}
+@media (max-width: 899px) {
+  .login {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .login__pitch {
+    display: none;
+  }
+}
