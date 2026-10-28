@@ -10,12 +10,14 @@ import {
   Settings,
   type LucideIcon,
 } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
+import { Badge } from '../components';
 import { IconButton, Tooltip } from '../components';
 import { t, type MessageKey } from '../lib/i18n';
 import type { NavMode } from '../lib/layout';
 import { NETWORKS } from '../features/browser/networks';
 import { modulesForRole } from '../features/modules/registry';
+import { selectUnreadByApp, useBrowser } from '../state/browser';
 import { useSession } from '../state/session';
 import { useUi } from '../state/ui';
 
@@ -63,8 +65,13 @@ export function Sidebar({ mode }: { mode: Exclude<NavMode, 'bottom'> }) {
   const { navCollapsed, toggleNav, networksOpen, toggleNetworks } = useUi();
   const role = useSession((s) => s.user?.role ?? 'EMPLOYEE');
   const location = useLocation();
+  const tabs = useBrowser((s) => s.tabs);
+  const activeTabId = useBrowser((s) => s.activeId);
+  const unread = useMemo(() => selectUnreadByApp(tabs), [tabs]);
   const activeApp =
-    location.pathname === '/browser' ? new URLSearchParams(location.search).get('app') : null;
+    location.pathname === '/browser'
+      ? (tabs.find((x) => x.id === activeTabId)?.appKey ?? null)
+      : null;
   const rail = mode === 'rail';
   const showNetworks = rail || networksOpen;
 
@@ -165,6 +172,12 @@ export function Sidebar({ mode }: { mode: Exclude<NavMode, 'bottom'> }) {
                     <n.icon size={14} strokeWidth={1.8} />
                   </span>
                   <span className="nav-item__label">{t(n.name)}</span>
+                  {unread[n.key] ? (
+                    <>
+                      <Badge count={unread[n.key]!} tone="danger" />
+                      <span className="nav-item__dot" aria-hidden="true" />
+                    </>
+                  ) : null}
                 </Link>
               </NavEntry>
             ))}

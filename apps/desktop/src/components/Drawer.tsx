@@ -2,6 +2,7 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { t } from '../lib/i18n';
+import { useOverlay } from '../state/overlay';
 import { IconButton } from './IconButton';
 
 export interface DrawerProps {
@@ -17,6 +18,9 @@ const FOCUSABLE =
 /** Right-side panel: overlay, Esc/overlay-click to close, focus trapped inside and restored on close. */
 export function Drawer({ open, onClose, title, children }: DrawerProps) {
   const panel = useRef<HTMLDivElement>(null);
+
+  // native browser webviews paint above HTML, so they are hidden while a drawer is open
+  useEffect(() => (open ? useOverlay.getState().acquire() : undefined), [open]);
 
   useEffect(() => {
     if (!open) return;

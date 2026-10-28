@@ -12,6 +12,10 @@
   grid-template-columns: minmax(0, 1fr);
   padding-bottom: var(--bottomnav-h);
 }
+/* On a phone the browser has its own bottom bar instead of the app's bottom navigation. */
+.shell[data-nav='bottom'][data-browser] {
+  padding-bottom: 0;
+}
 .shell[data-bp='laptop'] {
   --page-margin: 24px;
 }
@@ -26,6 +30,9 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+}
+.shell[data-browser] .shell__main {
+  height: 100vh;
 }
 .page {
   width: 100%;
@@ -362,4 +369,20 @@ button.sidebar__group-title {
   color: var(--nav-text-active);
   box-shadow: var(--shadow-popover);
   font-weight: 500;
+}
+
+/* Unread: a count in the full menu, a plain dot (with the tooltip carrying the details) in the icon rail. */
+.nav-item__dot {
+  display: none;
+  position: absolute;
+  top: 6px;
+  right: 14px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--danger-solid);
+  border: 2px solid var(--nav-bg);
+}
+.sidebar[data-mode='rail'] .nav-item__dot {
+  display: block;
 }

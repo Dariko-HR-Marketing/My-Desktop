@@ -32,3 +32,5 @@ jobs:
           workspaces: apps/desktop/src-tauri
       - run: cargo check
         working-directory: apps/desktop/src-tauri
+      - run: cargo test
+        working-directory: apps/desktop/src-tauri

@@ -1,18 +1,11 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Bell, LogOut, Search, Sparkles } from 'lucide-react';
-import { IconButton } from '../components';
+import { Search } from 'lucide-react';
 import { t } from '../lib/i18n';
-import { formatDate, formatTime, initials } from '../lib/format';
-import { logout } from '../features/auth/auth';
-import { useSession } from '../state/session';
+import { formatDate, formatTime } from '../lib/format';
+import { useNow } from '../lib/useNow';
+import { TopbarActions } from './TopbarActions';
 
 function Clock() {
-  const [now, setNow] = useState(() => new Date());
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 30_000);
-    return () => clearInterval(id);
-  }, []);
+  const now = useNow();
   return (
     <div className="topbar__clock">
       <span className="mono" style={{ fontWeight: 600 }}>
@@ -24,7 +17,6 @@ function Clock() {
 }
 
 export function Topbar() {
-  const user = useSession((s) => s.user);
   return (
     <header className="topbar">
       {/* The palette itself arrives in stage 7; the field is already the real entry point. */}
@@ -35,17 +27,7 @@ export function Topbar() {
       </button>
       <div className="topbar__right">
         <Clock />
-        <IconButton
-          className="topbar__ai"
-          label={`${t('top.ai')} · ${t('top.soon')}`}
-          icon={Sparkles}
-          disabled
-        />
-        <IconButton label={t('top.notifications')} icon={Bell} />
-        <IconButton label={t('auth.logout')} icon={LogOut} onClick={() => void logout()} />
-        <Link to="/settings" className="avatar" aria-label={t('top.profile')}>
-          {initials(user?.fullName)}
-        </Link>
+        <TopbarActions />
       </div>
     </header>
   );

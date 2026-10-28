@@ -43,3 +43,10 @@ Domen: `my-desk.tajriba24.uz` (A yozuv → `95.130.227.92`). Batafsil: `docs/07-
 5. `ssh deploy@95.130.227.92` kalit bilan ishlashiga ishonch hosil qilgach, `HARDEN_SSH=yes` bilan skriptni qayta ishga tushirib parol bilan kirishni oʻchiring.
 
 Parol va kalitlarni repozitoriyga yozmang. `deploy/.env` faqat serverda turadi.
+
+## Ichki brauzer: ma'lum cheklovlar
+
+- Har bir tab alohida Tauri child webview (`unstable` xususiyati). Windows (WebView2) va macOS da webview'lar React'dagi `BrowserViewport` joyiga aniq joylashadi.
+- **Linux (WebKitGTK):** Tauri child webview'larni joylashtirishni qoʻllamaydi — ular asosiy webview ostida ketma-ket turadi. Brauzer Linux'da ishlaydi (sahifalar yuklanadi, hodisalar keladi), lekin joylashuv toʻgʻri boʻlmaydi. Asosiy platforma — Windows.
+- `target=_blank` / `window.open` → yangi tab (`on_new_window`) kodda bor, lekin foydalanuvchi bosishini talab qiladi: avtomatlashtirilgan sinovda tekshirib boʻlmadi, Windows'da qoʻlda tekshirish kerak (Telegram, WhatsApp, YouTube).
+- Sessiya (cookie) tizim webview ma'lumotlar papkasida saqlanadi, shuning uchun Telegram/WhatsApp'ga bir marta kirish yetarli.

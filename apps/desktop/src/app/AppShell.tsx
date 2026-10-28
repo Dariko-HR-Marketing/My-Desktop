@@ -5,6 +5,8 @@ import { formatTime } from '../lib/format';
 import { t, tf } from '../lib/i18n';
 import { applyAppearance } from '../lib/appearance';
 import { navModeFor, useBreakpoint } from '../lib/layout';
+import { BrowserHost } from '../features/browser/BrowserHost';
+import { cx } from '../lib/cx';
 import { useData } from '../state/data';
 import { useSession } from '../state/session';
 import { useUi } from '../state/ui';
@@ -26,7 +28,12 @@ export function AppShell() {
   useEffect(() => applyAppearance(theme, density), [theme, density, bp]);
 
   return (
-    <div className="shell" data-nav={nav} data-bp={bp}>
+    <div
+      className="shell"
+      data-nav={nav}
+      data-bp={bp}
+      data-browser={onBrowser ? 'true' : undefined}
+    >
       <a href="#content" className="skip-link">
         {t('a11y.skip')}
       </a>
@@ -45,11 +52,12 @@ export function AppShell() {
             {tf('state.offline', { time: lastSync ? formatTime(new Date(lastSync)) : '—' })}
           </Banner>
         )}
-        <main id="content" tabIndex={-1} className="page">
+        <main id="content" tabIndex={-1} className={cx('page', onBrowser && 'page--bleed')}>
           <Outlet />
         </main>
       </div>
-      {nav === 'bottom' && <BottomNav />}
+      {nav === 'bottom' && !onBrowser && <BottomNav />}
+      <BrowserHost />
       <ToastHost />
     </div>
   );
