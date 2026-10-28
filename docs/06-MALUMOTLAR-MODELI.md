@@ -74,6 +74,7 @@ model UserSettings {
   quietFrom    String   @default("22:00")
   quietTo      String   @default("07:00")
   sleepMinutes Int      @default(10)
+  calendarUrl  String   @default("")
   updatedAt    DateTime @updatedAt
 }
 

@@ -73,6 +73,8 @@ export interface UserSettings {
   quietTo: string;
   /** Minutes before an idle browser tab sleeps; 0 = never. */
   sleepMinutes: number;
+  /** Secret iCalendar (.ics) address of the user's calendar; empty = not connected. */
+  calendarUrl: string;
 }
 
 export interface AppLink {
@@ -150,3 +152,23 @@ export type ServerMessage =
 
 export * from './edo.js';
 export { buildEdoData, edoSignals } from './edoDemo.js';
+
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  /** ISO date-times; for all-day events the day boundaries in local time. */
+  start: string;
+  end: string;
+  allDay: boolean;
+  location: string | null;
+  /** Online-meeting link found in the event (Meet, Zoom, Teams, Webex), if any. */
+  joinUrl: string | null;
+}
+
+export interface CalendarToday {
+  /** False when the user has not connected a calendar yet. */
+  configured: boolean;
+  items: CalendarEvent[];
+  fetchedAt: string | null;
+  stale: boolean;
+}

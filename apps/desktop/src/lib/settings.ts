@@ -11,6 +11,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
   quietFrom: '22:00',
   quietTo: '07:00',
   sleepMinutes: 10,
+  calendarUrl: '',
 };
 
 const toMinutes = (hhmm: string) => {

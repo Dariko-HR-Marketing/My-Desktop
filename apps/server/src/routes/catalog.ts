@@ -3,7 +3,8 @@ import { httpError } from '../errors.js';
 import { WidgetUnavailableError } from '../services/widgets.js';
 import { collectSignals } from '../modules/registry.js';
 import type { Deps } from '../app.js';
-import type { DashboardInfo } from '@ish-maydoni/shared';
+import type { CalendarToday, DashboardInfo } from '@ish-maydoni/shared';
+import { CalendarUnavailableError } from '../services/calendar.js';
 import { OPEN_STATUSES } from '../store/store.js';
 
 // Business day boundaries use Tashkent time (UTC+5, no DST).
@@ -16,7 +17,10 @@ export function dayBoundsTashkent(now: Date): { start: Date; end: Date } {
   return { start, end: new Date(start.getTime() + 86_400_000) };
 }
 
-export function catalogRoutes(app: FastifyInstance, { store, widgets, adapters, now }: Deps) {
+export function catalogRoutes(
+  app: FastifyInstance,
+  { store, widgets, adapters, now, calendar }: Deps,
+) {
   const auth = { preHandler: app.authenticate };
 
   app.get('/api/catalog/apps', auth, async () => ({ items: await store.catalog.apps() }));
@@ -57,6 +61,19 @@ export function catalogRoutes(app: FastifyInstance, { store, widgets, adapters, 
     if (!module.roles.includes(req.user.role))
       throw httpError(403, 'forbidden', 'Bu modulga ruxsat yoʻq');
     return adapter.data({ userId: req.user.sub, role: req.user.role });
+  });
+
+  // Today's events from the user's own calendar (secret .ics address kept in their settings).
+  app.get('/api/calendar/today', auth, async (req): Promise<CalendarToday> => {
+    const { calendarUrl } = await store.settings.get(req.user.sub);
+    if (!calendarUrl) return { configured: false, items: [], fetchedAt: null, stale: false };
+    const { start, end } = dayBoundsTashkent(now());
+    try {
+      return await calendar.today(calendarUrl, start, end);
+    } catch (err) {
+      if (err instanceof CalendarUnavailableError) throw httpError(503, 'unavailable', err.message);
+      throw err;
+    }
   });
 
   app.get('/api/dashboard', auth, async (req): Promise<DashboardInfo> => {

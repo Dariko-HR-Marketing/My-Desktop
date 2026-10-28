@@ -1,4 +1,5 @@
 import type {
+  CalendarToday,
   NotificationItem,
   CurrencyWidget,
   DashboardInfo,
@@ -143,4 +144,45 @@ export function demoNotifications(now: Date): { items: NotificationItem[]; unrea
     mk(4, 'SYSTEM', 'Dastur yangilandi', 'Ish maydoni 0.1.0', 1700, null, null),
   ];
   return { items, unread: items.length };
+}
+
+export function demoCalendar(now: Date): CalendarToday {
+  const at = (h: number, m: number, minutes: number) => {
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m);
+    return {
+      start: start.toISOString(),
+      end: new Date(start.getTime() + minutes * 60_000).toISOString(),
+    };
+  };
+  return {
+    configured: true,
+    stale: false,
+    fetchedAt: now.toISOString(),
+    items: [
+      {
+        id: 'd1',
+        title: 'Boʻlim yigʻilishi',
+        ...at(10, 0, 60),
+        allDay: false,
+        location: 'Xona 3',
+        joinUrl: null,
+      },
+      {
+        id: 'd2',
+        title: 'Loyiha muhokamasi',
+        ...at(14, 0, 45),
+        allDay: false,
+        location: null,
+        joinUrl: 'https://meet.google.com/demo',
+      },
+      {
+        id: 'd3',
+        title: 'Rahbar bilan suhbat',
+        ...at(16, 30, 30),
+        allDay: false,
+        location: 'Rahbar xonasi',
+        joinUrl: null,
+      },
+    ],
+  };
 }

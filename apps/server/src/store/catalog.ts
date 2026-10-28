@@ -128,4 +128,5 @@ export const DEFAULT_SETTINGS = {
   quietFrom: '22:00',
   quietTo: '07:00',
   sleepMinutes: 10,
+  calendarUrl: '',
 } as const;

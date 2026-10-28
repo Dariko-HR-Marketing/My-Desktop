@@ -59,6 +59,7 @@ export function createPrismaStore(databaseUrl: string): Store {
     quietFrom: string;
     quietTo: string;
     sleepMinutes: number;
+    calendarUrl: string;
   }) =>
     ({
       theme: row.theme,
@@ -71,6 +72,7 @@ export function createPrismaStore(databaseUrl: string): Store {
       quietFrom: row.quietFrom,
       quietTo: row.quietTo,
       sleepMinutes: row.sleepMinutes,
+      calendarUrl: row.calendarUrl,
     }) as UserSettings;
 
   return {

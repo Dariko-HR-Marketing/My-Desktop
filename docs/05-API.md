@@ -26,7 +26,8 @@ interface NotificationItem { id; category; title; body; actionLabel: string|null
   readAt: string|null; createdAt }
 interface UserSettings { theme: 'light'|'dark'|'system'; density: 'comfortable'|'compact';
   language: 'uz-Latn'|'uz-Cyrl'|'ru'|'en'; fontSize: 'sm'|'md'|'lg'; pinnedApps: string[]; navCollapsed: boolean;
-  quietEnabled: boolean; quietFrom: string /* HH:MM */; quietTo: string; sleepMinutes: number /* 0 = hech qachon */ }
+  quietEnabled: boolean; quietFrom: string /* HH:MM */; quietTo: string; sleepMinutes: number /* 0 = hech qachon */;
+  calendarUrl: string /* maxfiy .ics manzili; faqat https, ommaviy domen; '' = ulanmagan */ }
 interface AppLink { key; name; url; category: 'MESSENGER'|'SOCIAL'|'VIDEO'|'WORK'|'GOV'|'SEARCH'; color; mandatory; order }
 interface ModuleInfo { key; name; description; roles: Role[]; version }
 interface ModuleSignal { moduleKey; label; count: number; tone: 'info'|'warning'|'danger'; url: string /* module://edo/documents */ }
@@ -48,6 +49,7 @@ interface ModuleSignal { moduleKey; label; count: number; tone: 'info'|'warning'
 | GET | `/api/me` 🔒 | — | `{ user, settings }` |
 
 ### Bosh sahifa
+| GET | `/api/calendar/today` 🔒 | Bugungi uchrashuvlar: `{ configured, items: CalendarEvent[], fetchedAt, stale }`. Manba — foydalanuvchining `settings.calendarUrl` (maxfiy iCal/.ics manzili); 5 daqiqa kesh, `stale: true`; 503 — manba ishlamaydi |
 | GET | `/api/dashboard` 🔒 | `{ tasks: { today, todayDone, open, overdue }, unreadNotifications, signals: ModuleSignal[], generatedAt }` |
 |---|---|---|
 

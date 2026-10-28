@@ -23,7 +23,9 @@ export function errorHandler(err: FastifyError, req: FastifyRequest, reply: Fast
     });
   }
   const status = err.statusCode ?? 500;
-  if (status >= 500) {
+  const explicit = (err as { apiError?: string }).apiError;
+  // deliberate 5xx answers (e.g. 503 "source unavailable") keep their code and message; anything else is a bug
+  if (status >= 500 && !explicit) {
     req.log.error(err);
     return reply.code(500).send({ error: 'internal', message: 'Server xatosi' });
   }

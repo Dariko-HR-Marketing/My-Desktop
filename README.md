@@ -77,3 +77,9 @@ npx tauri signer generate -w updater.key
 ```
 
 Keyin GitHub Secrets ga: `TAURI_SIGNING_PRIVATE_KEY` (`updater.key` mazmuni), `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`, `TAURI_UPDATER_PUBKEY` (`updater.key.pub` mazmuni). Kalitni repozitoriyga qoʻymang. Windows kod imzosi (SmartScreen ogohlantirishini yoʻqotish uchun) sertifikat olingach alohida qoʻshiladi.
+
+## Kalendar (bosh sahifadagi «Bugungi jadval»)
+
+Sozlamalar → Kalendar: Google Calendar yoki Outlook'dagi **maxfiy iCal (.ics) manzili** kiritiladi. Server uni oʻqiydi (5 daqiqa kesh), takrorlanuvchi uchrashuvlarni ochadi (`RRULE`, `EXDATE`, koʻchirilgan nusxalar) va Meet/Zoom/Teams havolasi boʻlsa «Qoʻshilish» tugmasini koʻrsatadi. Ochiq kutubxonalar: [`node-ical`](https://github.com/jens-maus/node-ical) (+ `rrule`), [`undici`](https://github.com/nodejs/undici).
+
+Xavfsizlik: manzilni foydalanuvchi kiritgani uchun server uni faqat `https://`, ommaviy domen nomi, loginsiz va ichki tarmoqqa olib bormaydigan holda yuklaydi (har bir DNS javobi va qayta yoʻnaltirish tekshiriladi, hajm 2 MB, vaqt 8 s). Manzilning oʻzi maxfiy: u jurnalga yozilmaydi va faqat egasining sozlamalarida saqlanadi.

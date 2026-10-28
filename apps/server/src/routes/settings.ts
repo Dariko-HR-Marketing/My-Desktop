@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { DENSITIES, FONT_SIZES, LANGUAGES, THEMES } from '@ish-maydoni/shared';
+import { assertSafeUrl, UnsafeUrlError } from '../services/ssrf.js';
 import type { Deps } from '../app.js';
 
 const hhmm = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'HH:MM');
@@ -17,6 +18,21 @@ const patchBody = z
     quietFrom: hhmm,
     quietTo: hhmm,
     sleepMinutes: z.number().int().min(0).max(240),
+    calendarUrl: z
+      .string()
+      .trim()
+      .max(500)
+      .superRefine((v, ctx) => {
+        if (v === '') return;
+        try {
+          assertSafeUrl(v);
+        } catch (e) {
+          ctx.addIssue({
+            code: 'custom',
+            message: e instanceof UnsafeUrlError ? e.message : 'Manzil notoʻgʻri',
+          });
+        }
+      }),
   })
   .partial()
   .strict();

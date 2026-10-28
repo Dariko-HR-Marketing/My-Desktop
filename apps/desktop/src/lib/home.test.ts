@@ -5,6 +5,7 @@ import {
   computeTaskStats,
   dueLabel,
   greeting,
+  nextEventTime,
   resolveActionUrl,
   summarySentence,
   todayTasks,
@@ -113,5 +114,17 @@ describe('misc', () => {
     const done = toggled(task({}), now);
     expect(done).toMatchObject({ status: 'DONE', completedAt: now.toISOString() });
     expect(toggled(done, now)).toMatchObject({ status: 'TODO', completedAt: null });
+  });
+});
+
+describe('nextEventTime', () => {
+  it('returns the first upcoming timed event', () => {
+    const ev = (h: number, allDay = false) => ({
+      start: new Date(2026, 9, 28, h, 0).toISOString(),
+      allDay,
+    });
+    expect(nextEventTime([ev(9), ev(14), ev(16)], now)).toBe('14:00');
+    expect(nextEventTime([ev(9), ev(0, true)], now)).toBeNull();
+    expect(nextEventTime([], now)).toBeNull();
   });
 });

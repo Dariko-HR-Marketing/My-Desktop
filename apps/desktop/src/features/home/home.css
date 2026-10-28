@@ -111,3 +111,7 @@
 .diff--down {
   color: var(--danger);
 }
+
+.list__row--past {
+  opacity: 0.55;
+}

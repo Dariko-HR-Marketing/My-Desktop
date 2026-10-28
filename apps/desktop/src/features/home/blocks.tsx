@@ -1,10 +1,10 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
+  CalendarDays,
   CheckCircle2,
   Mail,
   MessageCircle,
   Send,
-  ShieldCheck,
   TriangleAlert,
   type LucideIcon,
 } from 'lucide-react';
@@ -13,7 +13,9 @@ import { Button, Card, Chip, EmptyState, Skeleton } from '../../components';
 import { dueLabel, isOverdue, resolveActionUrl, todayTasks, attentionTasks } from '../../lib/home';
 import { formatTime } from '../../lib/format';
 import { t, tf } from '../../lib/i18n';
-import { SAMPLE_MEETINGS, SAMPLE_MESSAGES, type SampleMessage } from '../../lib/sample';
+import { SAMPLE_MESSAGES, type SampleMessage } from '../../lib/sample';
+import { useBrowser } from '../../state/browser';
+import { useSession } from '../../state/session';
 import { useData, type Slice } from '../../state/data';
 
 export const SOURCE_KEY = {
@@ -188,27 +190,84 @@ export function MessagesCard() {
   );
 }
 
-export function ScheduleCard() {
+const clock = (iso: string) => formatTime(new Date(iso));
+
+/** Today's events from the user's own calendar (iCalendar address in Settings). */
+export function ScheduleCard({ now }: { now: Date }) {
+  const slice = useData((s) => s.calendar);
+  const demo = useSession((s) => s.demo);
+  const navigate = useNavigate();
+  const data = slice.data;
+
+  function join(url: string) {
+    useBrowser.getState().openTab({ url });
+    navigate('/browser');
+  }
+
   return (
-    <Card title={t('home.schedule')} action={<SampleMarker />}>
-      {SAMPLE_MEETINGS.length === 0 ? (
-        <EmptyState icon={ShieldCheck} title={t('home.schedule.empty')} />
-      ) : (
+    <Card
+      title={t('home.schedule')}
+      action={demo ? <SampleMarker /> : undefined}
+      aria-busy={slice.status === 'loading'}
+    >
+      {slice.status === 'loading' && <RowsSkeleton />}
+      {slice.status === 'error' && (
+        <ErrorBlock onRetry={() => void useData.getState().refreshCalendar()} />
+      )}
+      {slice.status === 'ready' && data && !data.configured && (
+        <EmptyState
+          icon={CalendarDays}
+          title={t('home.schedule.notConnected')}
+          description={t('home.schedule.notConnectedText')}
+          actions={
+            <Link to="/settings?s=calendar" className="btn btn--primary">
+              {t('home.schedule.connect')}
+            </Link>
+          }
+        />
+      )}
+      {slice.status === 'ready' && data?.configured && data.items.length === 0 && (
+        <EmptyState icon={CalendarDays} title={t('home.schedule.empty')} />
+      )}
+      {data?.configured && data.items.length > 0 && (
         <ul className="list">
-          {SAMPLE_MEETINGS.map((m) => (
-            <li key={m.time} className="list__row">
-              <span className="mono list__time">{m.time}</span>
-              <span className="list__main">
-                <span className="list__title">{m.title}</span>
-              </span>
-              {m.online && (
-                <Link to="/browser" className="btn btn--secondary">
-                  {t('home.schedule.join')}
-                </Link>
-              )}
-            </li>
-          ))}
+          {data.items.map((e) => {
+            const past = !e.allDay && new Date(e.end) < now;
+            return (
+              <li key={e.id} className={past ? 'list__row list__row--past' : 'list__row'}>
+                <span className="mono list__time">
+                  {e.allDay ? t('home.schedule.allDay') : clock(e.start)}
+                </span>
+                <span className="list__main">
+                  <span className="list__title">{e.title}</span>
+                  {(e.location || !e.allDay) && (
+                    <span className="t-caption">
+                      {[!e.allDay && `${clock(e.start)}–${clock(e.end)}`, e.location]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </span>
+                  )}
+                </span>
+                {e.joinUrl && !past && (
+                  <button
+                    type="button"
+                    className="btn btn--secondary"
+                    onClick={() => join(e.joinUrl!)}
+                  >
+                    {t('home.schedule.join')}
+                  </button>
+                )}
+              </li>
+            );
+          })}
         </ul>
+      )}
+      {data?.stale && (
+        <p className="t-caption">
+          {tf('home.stale', {
+            time: slice.updatedAt ? formatTime(new Date(slice.updatedAt)) : '—',
+          })}
+        </p>
       )}
     </Card>
   );

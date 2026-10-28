@@ -12,6 +12,7 @@ const PAGES = [
   '/browser',
   '/settings',
   '/settings?s=menu',
+  '/settings?s=calendar',
   '/m/edo',
   '/m/edo/documents?doc=doc-1',
   '/m/edo/control',

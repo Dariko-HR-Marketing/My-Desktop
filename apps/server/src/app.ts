@@ -9,6 +9,8 @@ import { authenticate } from './plugins/auth.js';
 import { makeEdoAdapter, type ModuleAdapter } from './modules/registry.js';
 import { RealtimeHub } from './services/realtime.js';
 import { createWidgets, type FetchLike, type Widgets } from './services/widgets.js';
+import { createCalendarService, type CalendarService } from './services/calendar.js';
+import { createSafeTextFetcher, type TextFetcher } from './services/ssrf.js';
 import { createMemoryStore } from './store/memory.js';
 import type { Store } from './store/store.js';
 import { authRoutes } from './routes/auth.js';
@@ -23,6 +25,7 @@ export interface Deps {
   store: Store;
   hub: RealtimeHub;
   widgets: Widgets;
+  calendar: CalendarService;
   adapters: ModuleAdapter[];
   now: () => Date;
 }
@@ -31,6 +34,8 @@ export interface AppOptions {
   config?: Config;
   store?: Store;
   fetch?: FetchLike;
+  /** Downloads a calendar (.ics) text; replaced in tests. */
+  calendarFetch?: TextFetcher;
   adapters?: ModuleAdapter[];
   now?: () => Date;
   logger?: boolean;
@@ -44,6 +49,7 @@ export async function buildApp(opts: AppOptions = {}) {
     store: opts.store ?? createMemoryStore({ bcryptRounds: config.BCRYPT_ROUNDS }),
     hub: new RealtimeHub(),
     widgets: createWidgets(opts.fetch ?? ((url, init) => fetch(url, init)), now),
+    calendar: createCalendarService(opts.calendarFetch ?? createSafeTextFetcher(), now),
     adapters: opts.adapters ?? [makeEdoAdapter(now)],
     now,
   };

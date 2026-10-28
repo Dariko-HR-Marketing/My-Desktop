@@ -2,6 +2,7 @@ import { useEffect, useState, type DragEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { invoke } from '@tauri-apps/api/core';
 import { ArrowDown, ArrowUp, GripVertical, Lock } from 'lucide-react';
+import type { UserSettings } from '@ish-maydoni/shared';
 import { Button, Card, IconButton, Switch } from '../../components';
 import { cx } from '../../lib/cx';
 import { APP_VERSION, serverUrl } from '../../lib/config';
@@ -10,13 +11,25 @@ import { useBreakpoint, type Density, type Theme } from '../../lib/layout';
 import { isTauri } from '../../lib/platform';
 import { checkForUpdate, installUpdate, type UpdateCheck } from '../../lib/updater';
 import { movePinned, togglePinned, visibleAppKeys } from '../../lib/settings';
-import { updateSettings, useSettings } from '../../lib/settingsSync';
+import { adoptServerSettings, updateSettings, useSettings } from '../../lib/settingsSync';
+import { ApiError } from '../../lib/api';
+import { api } from '../../lib/client';
+import { useData } from '../../state/data';
+import { useSession } from '../../state/session';
 import { APPS, appByKey } from '../browser/networks';
 import { useBrowser } from '../../state/browser';
 import { useToast } from '../../state/toast';
 import './settings.css';
 
-const SECTIONS = ['appearance', 'menu', 'notifications', 'language', 'browser', 'system'] as const;
+const SECTIONS = [
+  'appearance',
+  'menu',
+  'notifications',
+  'calendar',
+  'language',
+  'browser',
+  'system',
+] as const;
 type Section = (typeof SECTIONS)[number];
 
 function Segmented<T extends string>({
@@ -254,6 +267,84 @@ function UpdateRow() {
   );
 }
 
+function CalendarSection() {
+  const s = useSettings();
+  const demo = useSession((st) => st.demo);
+  const [url, setUrl] = useState(s.calendarUrl);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState<'connected' | 'removed' | null>(null);
+
+  async function save(next: string) {
+    setBusy(true);
+    setError(null);
+    setSaved(null);
+    try {
+      const result = await api.patch<UserSettings>('/api/settings', { calendarUrl: next });
+      adoptServerSettings(result);
+      setUrl(result.calendarUrl);
+      setSaved(next ? 'connected' : 'removed');
+      void useData.getState().refreshCalendar();
+    } catch (err) {
+      // a 400 carries the reason ("only https", "no private addresses"…); anything else is a connectivity problem
+      setError(
+        err instanceof ApiError && err.issues?.[0]?.message
+          ? err.issues[0].message
+          : t('calendar.failed'),
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (demo) return <p>{t('calendar.demo')}</p>;
+  return (
+    <form
+      className="stack"
+      onSubmit={(e) => {
+        e.preventDefault();
+        void save(url.trim());
+      }}
+    >
+      <Field label={t('calendar.label')} note={t('calendar.help')}>
+        <input
+          className="input"
+          type="url"
+          inputMode="url"
+          autoComplete="off"
+          spellCheck={false}
+          aria-label={t('calendar.label')}
+          placeholder="https://calendar.google.com/calendar/ical/…/basic.ics"
+          value={url}
+          aria-invalid={!!error}
+          aria-describedby={error ? 'cal-err' : undefined}
+          onChange={(e) => setUrl(e.target.value)}
+        />
+      </Field>
+      {error && (
+        <p id="cal-err" className="field__error" role="alert">
+          {error}
+        </p>
+      )}
+      {saved && (
+        <p role="status" className="t-caption">
+          {t(saved === 'connected' ? 'calendar.connected' : 'calendar.removed')}
+        </p>
+      )}
+      <div className="row">
+        <Button type="submit" variant="primary" disabled={busy || url.trim() === s.calendarUrl}>
+          {t('calendar.save')}
+        </Button>
+        {s.calendarUrl && (
+          <Button variant="danger-ghost" disabled={busy} onClick={() => void save('')}>
+            {t('calendar.remove')}
+          </Button>
+        )}
+      </div>
+    </form>
+  );
+}
+
 function SystemSection() {
   const [autostart, setAutostart] = useState<boolean | null>(null);
   const [url, setUrl] = useState(serverUrl());
@@ -401,6 +492,7 @@ export function SettingsPage() {
         </div>
       </div>
     ),
+    calendar: <CalendarSection />,
     language: (
       <Field label={t('settings.language')}>
         <select

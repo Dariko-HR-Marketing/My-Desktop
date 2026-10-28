@@ -1,15 +1,10 @@
 import { Link } from 'react-router-dom';
 import { FilePlus2, Globe, Plus } from 'lucide-react';
 import { Card, Kpi, Skeleton } from '../../components';
-import { formatDate, formatTime } from '../../lib/format';
-import { greeting, resolveActionUrl, summarySentence } from '../../lib/home';
+import { formatDate } from '../../lib/format';
+import { greeting, nextEventTime, resolveActionUrl, summarySentence } from '../../lib/home';
 import { t } from '../../lib/i18n';
-import {
-  nextMeeting,
-  SAMPLE_ARRIVAL,
-  SAMPLE_MEETINGS,
-  SAMPLE_PLAN_PERCENT,
-} from '../../lib/sample';
+import { SAMPLE_ARRIVAL, SAMPLE_PLAN_PERCENT } from '../../lib/sample';
 import { useNow } from '../../lib/useNow';
 import { selectStats, useData } from '../../state/data';
 import { useSession } from '../../state/session';
@@ -31,7 +26,8 @@ export function HomePage() {
   const tasks = useData((s) => s.tasks);
   const dashboard = useData((s) => s.dashboard);
   const stats = selectStats({ tasks, dashboard }, now);
-  const meeting = nextMeeting(SAMPLE_MEETINGS, formatTime(now));
+  const calendar = useData((s) => s.calendar.data);
+  const meetingTime = nextEventTime(calendar?.items ?? [], now);
   const signature = dashboard.data?.signals.find((s) => s.label === 'Imzo kutmoqda');
   const loading = !stats && (tasks.status === 'loading' || tasks.status === 'idle');
   const progress = stats && stats.today > 0 ? Math.round((stats.todayDone / stats.today) * 100) : 0;
@@ -45,7 +41,7 @@ export function HomePage() {
           </div>
           <h1 className="t-display">{greeting(now.getHours(), user?.fullName)}</h1>
           <p className="home__summary" aria-live="polite">
-            {stats ? summarySentence(stats, meeting?.time) : <Skeleton width={320} />}
+            {stats ? summarySentence(stats, meetingTime) : <Skeleton width={320} />}
           </p>
         </div>
         <div className="row">
@@ -124,7 +120,7 @@ export function HomePage() {
         </div>
         <div className="stack">
           <MessagesCard />
-          <ScheduleCard />
+          <ScheduleCard now={now} />
           <WidgetsCard />
         </div>
       </div>

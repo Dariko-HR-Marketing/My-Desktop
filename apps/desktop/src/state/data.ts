@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type {
   CurrencyWidget,
+  CalendarToday,
   DashboardInfo,
   NotificationItem,
   ServerMessage,
@@ -11,6 +12,7 @@ import { ApiError, NetworkError } from '../lib/api';
 import { readCache, writeCache } from '../lib/cache';
 import { api } from '../lib/client';
 import {
+  demoCalendar,
   demoCurrency,
   demoDashboard,
   demoNotifications,
@@ -71,9 +73,11 @@ interface DataState {
   currency: Slice<CurrencyWidget>;
   weather: Slice<WeatherWidget>;
   notifications: Slice<NotificationsData>;
+  calendar: Slice<CalendarToday>;
   /** The last core request failed because the server is unreachable. */
   offline: boolean;
   loadAll(): Promise<void>;
+  refreshCalendar(): Promise<void>;
   flushQueue(): Promise<void>;
   createTask(input: TaskInput): void;
   updateTask(id: string, changes: TaskChanges): void;
@@ -84,13 +88,14 @@ interface DataState {
   reset(): void;
 }
 
-type Key = 'tasks' | 'dashboard' | 'currency' | 'weather' | 'notifications';
+type Key = 'tasks' | 'dashboard' | 'currency' | 'weather' | 'notifications' | 'calendar';
 const PATHS: Record<Key, string> = {
   tasks: '/api/tasks',
   dashboard: '/api/dashboard',
   currency: '/api/widgets/currency',
   weather: '/api/widgets/weather',
   notifications: '/api/notifications?limit=50',
+  calendar: '/api/calendar/today',
 };
 
 export const useData = create<DataState>()((set, get) => {
@@ -190,7 +195,13 @@ export const useData = create<DataState>()((set, get) => {
     currency: empty(),
     weather: empty(),
     notifications: empty(),
+    calendar: empty(),
     offline: false,
+
+    async refreshCalendar() {
+      if (useSession.getState().demo) return;
+      await loadSlice('calendar');
+    },
 
     async loadAll() {
       if (useSession.getState().demo) {
@@ -206,6 +217,7 @@ export const useData = create<DataState>()((set, get) => {
           },
           currency: { status: 'ready', data: demoCurrency(now), updatedAt: Date.now() },
           weather: { status: 'ready', data: demoWeather(now), updatedAt: Date.now() },
+          calendar: { status: 'ready', data: demoCalendar(now), updatedAt: Date.now() },
           notifications: {
             status: 'ready',
             data: get().notifications.data ?? demoNotifications(now),
@@ -412,6 +424,7 @@ export const useData = create<DataState>()((set, get) => {
         currency: empty(),
         weather: empty(),
         notifications: empty(),
+        calendar: empty(),
         offline: false,
       }),
   };

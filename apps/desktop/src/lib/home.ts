@@ -108,3 +108,14 @@ export function toggled(task: Task, now: Date): Task {
     updatedAt: now.toISOString(),
   };
 }
+
+/** HH:MM of the first timed event that starts after `now`, or null. */
+export function nextEventTime(
+  events: { start: string; allDay: boolean }[],
+  now: Date,
+): string | null {
+  const next = events
+    .filter((e) => !e.allDay && new Date(e.start) > now)
+    .sort((a, b) => a.start.localeCompare(b.start))[0];
+  return next ? formatTime(new Date(next.start)) : null;
+}
