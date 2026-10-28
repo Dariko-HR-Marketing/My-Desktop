@@ -50,6 +50,6 @@ Tekshiruv usullari: Vitest (desktop 138, server 41), Rust `cargo test` (4), Play
 - ⬜ Amallar (imzolash, kelishish) — tashqi tizim va E-IMZO ulangach
 
 ## Tezlik (Linux, WebKitGTK, dasturiy render — Windows'da farq qiladi; docs/PERFORMANCE.md)
-- ✅ Oyna ochilishi (kirish sahifasi) ≈ 1,0 s ≤ 1,5 s
-- ✅ Boʻsh holatda xotira ≈ 222 MB ≤ 250 MB
-- 🟡 Windows oʻrnatma ≤ 20 MB — `release-desktop.yml` qurgach oʻlchanadi
+- ✅ Oyna ochilishi (kirish sahifasi) ≈ 1,0–1,2 s ≤ 1,5 s
+- ✅ Boʻsh holatda xotira ≈ 217 MB ≤ 250 MB
+- ✅/🟡 Ilova fayli 7,2 MB (gzip 3,3 MB); Windows oʻrnatma ≤ 20 MB — `release-desktop.yml` qurgach tasdiqlanadi
