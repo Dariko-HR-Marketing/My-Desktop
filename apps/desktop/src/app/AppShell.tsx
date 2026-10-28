@@ -6,6 +6,8 @@ import { t, tf } from '../lib/i18n';
 import { applyAppearance } from '../lib/appearance';
 import { navModeFor, useBreakpoint } from '../lib/layout';
 import { BrowserHost } from '../features/browser/BrowserHost';
+import { NotificationsDrawer } from '../features/notifications/NotificationsDrawer';
+import { CommandPalette } from '../features/search/CommandPalette';
 import { cx } from '../lib/cx';
 import { useData } from '../state/data';
 import { useSession } from '../state/session';
@@ -17,7 +19,7 @@ import { Topbar } from './Topbar';
 
 export function AppShell() {
   const bp = useBreakpoint();
-  const { theme, density, navCollapsed } = useUi();
+  const { theme, density, navCollapsed, fontSize } = useUi();
   const onBrowser = useLocation().pathname === '/browser';
   const nav = navModeFor(bp, navCollapsed, onBrowser);
   const demo = useSession((s) => s.demo);
@@ -25,7 +27,20 @@ export function AppShell() {
   const lastSync = useData((s) => s.tasks.updatedAt);
   useDataSync();
 
-  useEffect(() => applyAppearance(theme, density), [theme, density, bp]);
+  // Ctrl+K / Cmd+K opens the command palette from anywhere
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        const ui = useUi.getState();
+        ui.setPaletteOpen(!ui.paletteOpen);
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
+
+  useEffect(() => applyAppearance(theme, density, fontSize), [theme, density, fontSize, bp]);
 
   return (
     <div
@@ -58,6 +73,8 @@ export function AppShell() {
       </div>
       {nav === 'bottom' && !onBrowser && <BottomNav />}
       <BrowserHost />
+      <NotificationsDrawer />
+      <CommandPalette />
       <ToastHost />
     </div>
   );

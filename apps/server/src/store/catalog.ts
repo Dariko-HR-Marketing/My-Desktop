@@ -123,4 +123,9 @@ export const DEFAULT_SETTINGS = {
   language: 'uz-Latn',
   pinnedApps: ['telegram', 'whatsapp', 'instagram', 'youtube'],
   navCollapsed: false,
+  fontSize: 'md',
+  quietEnabled: false,
+  quietFrom: '22:00',
+  quietTo: '07:00',
+  sleepMinutes: 10,
 } as const;

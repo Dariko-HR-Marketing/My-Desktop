@@ -15,7 +15,9 @@ import { Badge } from '../components';
 import { IconButton, Tooltip } from '../components';
 import { t, type MessageKey } from '../lib/i18n';
 import type { NavMode } from '../lib/layout';
-import { NETWORKS } from '../features/browser/networks';
+import { APPS, appByKey } from '../features/browser/networks';
+import { visibleAppKeys } from '../lib/settings';
+import { updateSettings, useSettings } from '../lib/settingsSync';
 import { modulesForRole } from '../features/modules/registry';
 import { selectUnreadByApp, useBrowser } from '../state/browser';
 import { useSession } from '../state/session';
@@ -62,7 +64,9 @@ function PageLink({
 }
 
 export function Sidebar({ mode }: { mode: Exclude<NavMode, 'bottom'> }) {
-  const { navCollapsed, toggleNav, networksOpen, toggleNetworks } = useUi();
+  const { navCollapsed, networksOpen, toggleNetworks } = useUi();
+  const settings = useSettings();
+  const networks = visibleAppKeys(settings.pinnedApps, APPS).flatMap((k) => appByKey(k) ?? []);
   const role = useSession((s) => s.user?.role ?? 'EMPLOYEE');
   const location = useLocation();
   const tabs = useBrowser((s) => s.tabs);
@@ -90,7 +94,7 @@ export function Sidebar({ mode }: { mode: Exclude<NavMode, 'bottom'> }) {
           <IconButton
             label={rail ? t('nav.expand') : t('nav.collapse')}
             icon={rail ? PanelLeftOpen : PanelLeftClose}
-            onClick={toggleNav}
+            onClick={() => updateSettings({ navCollapsed: !navCollapsed })}
             aria-expanded={!rail}
           />
         )}
@@ -156,7 +160,7 @@ export function Sidebar({ mode }: { mode: Exclude<NavMode, 'bottom'> }) {
             </button>
           )}
           {showNetworks &&
-            NETWORKS.map((n) => (
+            networks.map((n) => (
               <NavEntry key={n.key} label={t(n.name)} mode={mode}>
                 <Link
                   to={`/browser?app=${n.key}`}

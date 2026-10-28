@@ -124,3 +124,13 @@ a {
     transition: none !important;
   }
 }
+
+/* Font size (Sozlamalar → Ko'rinish). Only body-sized text scales; headings keep their token sizes. */
+:root[data-font='sm'] {
+  --fs-body: 13px;
+  --fs-caption: 11px;
+}
+:root[data-font='lg'] {
+  --fs-body: 16px;
+  --fs-caption: 13px;
+}

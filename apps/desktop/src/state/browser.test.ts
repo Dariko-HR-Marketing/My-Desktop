@@ -80,7 +80,7 @@ describe('browser store', () => {
       url: 'https://lex.uz/docs/1',
       loading: true,
       groupId: 'ish',
-      appKey: null,
+      appKey: 'lex',
     });
   });
 });

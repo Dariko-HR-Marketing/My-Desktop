@@ -25,7 +25,8 @@ interface Task { id; title; notes: string|null; source; status; priority; dueAt:
 interface NotificationItem { id; category; title; body; actionLabel: string|null; actionUrl: string|null;
   readAt: string|null; createdAt }
 interface UserSettings { theme: 'light'|'dark'|'system'; density: 'comfortable'|'compact';
-  language: 'uz-Latn'|'uz-Cyrl'|'ru'|'en'; pinnedApps: string[]; navCollapsed: boolean }
+  language: 'uz-Latn'|'uz-Cyrl'|'ru'|'en'; fontSize: 'sm'|'md'|'lg'; pinnedApps: string[]; navCollapsed: boolean;
+  quietEnabled: boolean; quietFrom: string /* HH:MM */; quietTo: string; sleepMinutes: number /* 0 = hech qachon */ }
 interface AppLink { key; name; url; category: 'MESSENGER'|'SOCIAL'|'VIDEO'|'WORK'|'GOV'|'SEARCH'; color; mandatory; order }
 interface ModuleInfo { key; name; description; roles: Role[]; version }
 interface ModuleSignal { moduleKey; label; count: number; tone: 'info'|'warning'|'danger'; url: string /* module://edo/documents */ }

@@ -5,6 +5,7 @@ import { clearCache, readCache, writeCache } from '../../lib/cache';
 import { DEMO_SETTINGS, DEMO_USER } from '../../lib/demoData';
 import { secureStorage } from '../../lib/platform';
 import { useSession } from '../../state/session';
+import { adoptServerSettings } from '../../lib/settingsSync';
 import { useData } from '../../state/data';
 
 const TOKEN_KEY = 'session-token';
@@ -40,6 +41,7 @@ export async function restoreSession(): Promise<void> {
     const me = await api.get<MeResponse>('/api/me');
     writeCache('me', me);
     setSession(token, me.user, me.settings);
+    adoptServerSettings(me.settings);
   } catch (err) {
     if (err instanceof ApiError && err.status === 401) return; // onUnauthorized already signed out
     if (!cached) setAnon(); // offline and nothing to show
@@ -58,6 +60,7 @@ export async function login(loginName: string, password: string): Promise<void> 
     const me = await api.get<MeResponse>('/api/me');
     writeCache('me', me);
     useSession.getState().setUser(me.user, me.settings);
+    adoptServerSettings(me.settings);
   } catch (err) {
     if (err instanceof NetworkError) return; // signed in; settings arrive on the next successful call
     throw err;

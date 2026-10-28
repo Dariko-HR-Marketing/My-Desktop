@@ -142,3 +142,50 @@ describe('settings', () => {
     ).toBe(400);
   });
 });
+
+describe('settings — extended fields', () => {
+  it('has defaults and validates quiet hours, font size and sleep minutes', async () => {
+    const app = await makeApp();
+    const { headers } = await login(app);
+    expect((await app.inject({ url: '/api/settings', headers })).json()).toMatchObject({
+      fontSize: 'md',
+      quietEnabled: false,
+      quietFrom: '22:00',
+      quietTo: '07:00',
+      sleepMinutes: 10,
+    });
+    const ok = await app.inject({
+      method: 'PATCH',
+      url: '/api/settings',
+      headers,
+      payload: {
+        quietEnabled: true,
+        quietFrom: '23:30',
+        quietTo: '06:15',
+        fontSize: 'lg',
+        sleepMinutes: 0,
+      },
+    });
+    expect(ok.json()).toMatchObject({
+      quietEnabled: true,
+      quietFrom: '23:30',
+      quietTo: '06:15',
+      fontSize: 'lg',
+      sleepMinutes: 0,
+    });
+    for (const bad of [
+      { quietFrom: '24:00' },
+      { quietTo: '7:00' },
+      { fontSize: 'xl' },
+      { sleepMinutes: -1 },
+      { sleepMinutes: 1.5 },
+      { sleepMinutes: 999 },
+    ]) {
+      expect(
+        (await app.inject({ method: 'PATCH', url: '/api/settings', headers, payload: bad }))
+          .statusCode,
+        JSON.stringify(bad),
+      ).toBe(400);
+    }
+  });
+});

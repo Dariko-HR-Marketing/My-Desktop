@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { bridge, listenToBrowser } from '../../lib/browserBridge';
 import { useBrowser } from '../../state/browser';
-
-const SLEEP_AFTER_MS = 10 * 60_000;
+import { useUi } from '../../state/ui';
 
 /** Always mounted: receives native tab events (titles, unread counts, new-window requests) and puts idle tabs to sleep. */
 export function BrowserHost() {
@@ -20,10 +19,10 @@ export function BrowserHost() {
       if (cancelled) unlisten();
       else off = unlisten;
     });
-    const timer = setInterval(
-      () => useBrowser.getState().sleepStale(Date.now(), SLEEP_AFTER_MS),
-      60_000,
-    );
+    const timer = setInterval(() => {
+      const minutes = useUi.getState().sleepMinutes;
+      if (minutes > 0) useBrowser.getState().sleepStale(Date.now(), minutes * 60_000);
+    }, 60_000);
     return () => {
       cancelled = true;
       off?.();

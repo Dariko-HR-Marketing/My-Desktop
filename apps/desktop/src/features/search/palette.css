@@ -1,0 +1,110 @@
+.palette-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 12vh var(--space-4) var(--space-4);
+  background: var(--overlay);
+  backdrop-filter: blur(2px);
+}
+.palette {
+  display: flex;
+  flex-direction: column;
+  width: min(var(--palette-w), 100%);
+  max-height: 70vh;
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow-dialog);
+  overflow: hidden;
+}
+.palette__search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: 52px;
+  padding: 0 var(--space-5);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+.palette__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font-size: 16px;
+  outline: none;
+}
+.palette__filters {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5) 0;
+}
+.palette__chip {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.palette__results {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-2) var(--space-3);
+}
+.palette__section {
+  padding: var(--space-3) var(--space-2) var(--space-1);
+  color: var(--text-secondary);
+}
+.palette__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 40px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.palette__row--active {
+  background: var(--accent-soft);
+}
+.palette__row--disabled {
+  cursor: default;
+  color: var(--text-muted);
+}
+.palette__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--neutral-chip);
+  color: var(--text-secondary);
+}
+.palette__title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.palette__trail {
+  padding: 1px var(--space-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+}
+.palette__empty {
+  margin: 0;
+  padding: var(--space-5);
+  color: var(--text-secondary);
+  text-align: center;
+}
+.palette__foot {
+  padding: var(--space-3) var(--space-5);
+  border-top: 1px solid var(--border);
+}

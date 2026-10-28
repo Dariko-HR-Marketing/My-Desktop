@@ -16,6 +16,7 @@ export type NotificationCategory = (typeof NOTIFICATION_CATEGORIES)[number];
 export const THEMES = ['light', 'dark', 'system'] as const;
 export const DENSITIES = ['comfortable', 'compact'] as const;
 export const LANGUAGES = ['uz-Latn', 'uz-Cyrl', 'ru', 'en'] as const;
+export const FONT_SIZES = ['sm', 'md', 'lg'] as const;
 
 export const APP_CATEGORIES = ['MESSENGER', 'SOCIAL', 'VIDEO', 'WORK', 'GOV', 'SEARCH'] as const;
 export type AppCategory = (typeof APP_CATEGORIES)[number];
@@ -63,8 +64,15 @@ export interface UserSettings {
   theme: (typeof THEMES)[number];
   density: (typeof DENSITIES)[number];
   language: (typeof LANGUAGES)[number];
+  fontSize: (typeof FONT_SIZES)[number];
   pinnedApps: string[];
   navCollapsed: boolean;
+  /** Quiet mode: only urgent notifications get through between `quietFrom` and `quietTo` (HH:MM, local time). */
+  quietEnabled: boolean;
+  quietFrom: string;
+  quietTo: string;
+  /** Minutes before an idle browser tab sleeps; 0 = never. */
+  sleepMinutes: number;
 }
 
 export interface AppLink {

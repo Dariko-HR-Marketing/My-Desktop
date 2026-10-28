@@ -1,7 +1,9 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import { DENSITIES, LANGUAGES, THEMES } from '@ish-maydoni/shared';
+import { DENSITIES, FONT_SIZES, LANGUAGES, THEMES } from '@ish-maydoni/shared';
 import type { Deps } from '../app.js';
+
+const hhmm = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'HH:MM');
 
 const patchBody = z
   .object({
@@ -10,6 +12,11 @@ const patchBody = z
     language: z.enum(LANGUAGES),
     pinnedApps: z.array(z.string().max(50)).max(50),
     navCollapsed: z.boolean(),
+    fontSize: z.enum(FONT_SIZES),
+    quietEnabled: z.boolean(),
+    quietFrom: hhmm,
+    quietTo: hhmm,
+    sleepMinutes: z.number().int().min(0).max(240),
   })
   .partial()
   .strict();

@@ -1,4 +1,5 @@
 import type {
+  NotificationItem,
   CurrencyWidget,
   DashboardInfo,
   Task,
@@ -7,6 +8,7 @@ import type {
   WeatherWidget,
 } from '@ish-maydoni/shared';
 import { computeTaskStats } from './home';
+import { DEFAULT_SETTINGS } from './settings';
 
 const hours = (base: Date, h: number) => new Date(base.getTime() + h * 3_600_000).toISOString();
 
@@ -19,13 +21,7 @@ export const DEMO_USER: User = {
   role: 'EMPLOYEE',
 };
 
-export const DEMO_SETTINGS: UserSettings = {
-  theme: 'system',
-  density: 'comfortable',
-  language: 'uz-Latn',
-  pinnedApps: ['telegram', 'whatsapp', 'instagram', 'youtube'],
-  navCollapsed: false,
-};
+export const DEMO_SETTINGS: UserSettings = DEFAULT_SETTINGS;
 
 export function demoTasks(now: Date): Task[] {
   const mk = (
@@ -103,3 +99,48 @@ export const demoWeather = (now: Date): WeatherWidget => ({
   fetchedAt: now.toISOString(),
   stale: false,
 });
+
+export function demoNotifications(now: Date): { items: NotificationItem[]; unread: number } {
+  const ago = (min: number) => new Date(now.getTime() - min * 60_000).toISOString();
+  const mk = (
+    i: number,
+    category: NotificationItem['category'],
+    title: string,
+    body: string,
+    min: number,
+    actionLabel: string | null,
+    actionUrl: string | null,
+  ): NotificationItem => ({
+    id: `demo-n${i}`,
+    category,
+    title,
+    body,
+    actionLabel,
+    actionUrl,
+    readAt: null,
+    createdAt: ago(min),
+  });
+  const items = [
+    mk(
+      1,
+      'WORK',
+      'Imzo kutilmoqda',
+      '03-12/458 — buyruq loyihasi',
+      12,
+      'Imzolash',
+      'module://edo/documents',
+    ),
+    mk(2, 'MESSAGE', 'Telegram', '3 ta yangi xabar', 40, 'Ochish', 'https://web.telegram.org/a/'),
+    mk(
+      3,
+      'WORK',
+      'Ijro muddati yaqin',
+      '2 ta topshiriq ertaga tugaydi',
+      180,
+      'Ochish',
+      'module://edo/control',
+    ),
+    mk(4, 'SYSTEM', 'Dastur yangilandi', 'Ish maydoni 0.1.0', 1700, null, null),
+  ];
+  return { items, unread: items.length };
+}

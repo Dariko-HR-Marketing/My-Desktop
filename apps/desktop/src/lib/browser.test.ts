@@ -66,7 +66,8 @@ describe('url helpers', () => {
     expect(appKeyForUrl('https://web.telegram.org/a/#123')).toBe('telegram');
     expect(appKeyForUrl('https://www.youtube.com/watch?v=1')).toBe('youtube');
     expect(appKeyForUrl('https://m.facebook.com/')).toBe('facebook');
-    expect(appKeyForUrl('https://lex.uz/')).toBeNull();
+    expect(appKeyForUrl('https://lex.uz/')).toBe('lex');
+    expect(appKeyForUrl('https://example.com/')).toBeNull();
     expect(appKeyForUrl('notaurl')).toBeNull();
   });
   it('groups messengers and work sites', () => {

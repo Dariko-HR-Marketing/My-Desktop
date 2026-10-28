@@ -109,11 +109,53 @@
   --skeleton: #E6E8EC;
 }
 
+/* [data-preview-*] lets the settings page render a mock-up in another theme or density inside the live UI. */
+[data-preview-theme='light'] {
+  color-scheme: light;
+  --bg: #F3F4F6;
+  --surface: #FFFFFF;
+  --surface-hover: #F2F3F5;
+  --surface-muted: #F6F7F9;
+  --border: #E3E5EA;
+  --border-strong: #D5D9E0;
+  --divider: #EEF0F3;
+  --text: #15171C;
+  --text-secondary: #4A505C;
+  --text-muted: #5F6672;
+  --accent: #1D4ED8;
+  --accent-hover: #1E3A8A;
+  --accent-soft: #EEF2FD;
+  --accent-border: #C9D6FA;
+  --accent-strong: #2F5BEA;
+  --on-accent: #FFFFFF;
+  --danger: #B42318;
+  --danger-soft: #FDECEA;
+  --danger-solid: #C4282E;
+  --warning: #8A4B00;
+  --warning-soft: #FFF1DB;
+  --success: #1E6B3C;
+  --success-soft: #E6F4EC;
+  --success-solid: #1E8A4C;
+  --neutral-chip: #EEF0F3;
+  --nav-bg: #111827;
+  --nav-text: #C9CED8;
+  --nav-muted: #8B94A5;
+  --nav-active: #22304D;
+  --nav-hover: #1A2335;
+  --nav-divider: #263042;
+  --nav-text-active: #FFFFFF;
+  --on-solid: #FFFFFF;
+  --overlay: rgba(17,24,39,0.32);
+  --focus-ring: #1D4ED8;
+  --skeleton: #E6E8EC;
+}
+
 :root[data-theme='light'] {
   color-scheme: light;
 }
 
-:root[data-theme='dark'] {
+:root[data-theme='dark'],
+[data-preview-theme='dark'] {
   color-scheme: dark;
   --bg: #14161B;
   --surface: #1E2128;
@@ -195,7 +237,8 @@
   }
 }
 
-:root[data-density='compact'] {
+:root[data-density='compact'],
+[data-preview-density='compact'] {
   --control-h: 36px;
   --row-h: 40px;
   --nav-item-h: 36px;

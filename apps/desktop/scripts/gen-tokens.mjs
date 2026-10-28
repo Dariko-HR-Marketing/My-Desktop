@@ -66,11 +66,18 @@ ${bp}
 ${colorVars(t.color.light, '  ')}
 }
 
+/* [data-preview-*] lets the settings page render a mock-up in another theme or density inside the live UI. */
+[data-preview-theme='light'] {
+  color-scheme: light;
+${colorVars(t.color.light, '  ')}
+}
+
 :root[data-theme='light'] {
   color-scheme: light;
 }
 
-:root[data-theme='dark'] {
+:root[data-theme='dark'],
+[data-preview-theme='dark'] {
   color-scheme: dark;
 ${colorVars(t.color.dark, '  ')}
 }
@@ -82,7 +89,8 @@ ${colorVars(t.color.dark, '    ')}
   }
 }
 
-:root[data-density='compact'] {
+:root[data-density='compact'],
+[data-preview-density='compact'] {
   --control-h: ${px(s.control.compact)};
   --row-h: ${px(s.row.compact)};
   --nav-item-h: ${px(s.navItem.compact)};

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type {
   CurrencyWidget,
   DashboardInfo,
+  NotificationItem,
   ServerMessage,
   Task,
   WeatherWidget,
@@ -9,7 +10,16 @@ import type {
 import { ApiError, NetworkError } from '../lib/api';
 import { readCache, writeCache } from '../lib/cache';
 import { api } from '../lib/client';
-import { demoCurrency, demoDashboard, demoTasks, demoWeather } from '../lib/demoData';
+import {
+  demoCurrency,
+  demoDashboard,
+  demoNotifications,
+  demoTasks,
+  demoWeather,
+} from '../lib/demoData';
+import { notifyDesktop } from '../lib/desktopNotify';
+import { adoptServerSettings, flushSettings } from '../lib/settingsSync';
+import { DEFAULT_SETTINGS, showSystemNotification } from '../lib/settings';
 import { computeTaskStats } from '../lib/home';
 import {
   enqueue,
@@ -33,6 +43,11 @@ export interface Slice<T> {
 
 const empty = <T>(): Slice<T> => ({ status: 'idle', data: null, updatedAt: null });
 
+export interface NotificationsData {
+  items: NotificationItem[];
+  unread: number;
+}
+
 export interface TaskInput {
   title: string;
   notes?: string | null;
@@ -55,6 +70,7 @@ interface DataState {
   dashboard: Slice<DashboardInfo>;
   currency: Slice<CurrencyWidget>;
   weather: Slice<WeatherWidget>;
+  notifications: Slice<NotificationsData>;
   /** The last core request failed because the server is unreachable. */
   offline: boolean;
   loadAll(): Promise<void>;
@@ -63,16 +79,18 @@ interface DataState {
   updateTask(id: string, changes: TaskChanges): void;
   removeTask(id: string): void;
   toggleTask(id: string): void;
+  markRead(ids: string[] | 'all'): void;
   applyMessage(msg: ServerMessage): void;
   reset(): void;
 }
 
-type Key = 'tasks' | 'dashboard' | 'currency' | 'weather';
+type Key = 'tasks' | 'dashboard' | 'currency' | 'weather' | 'notifications';
 const PATHS: Record<Key, string> = {
   tasks: '/api/tasks',
   dashboard: '/api/dashboard',
   currency: '/api/widgets/currency',
   weather: '/api/widgets/weather',
+  notifications: '/api/notifications?limit=50',
 };
 
 export const useData = create<DataState>()((set, get) => {
@@ -171,6 +189,7 @@ export const useData = create<DataState>()((set, get) => {
     dashboard: empty(),
     currency: empty(),
     weather: empty(),
+    notifications: empty(),
     offline: false,
 
     async loadAll() {
@@ -187,10 +206,16 @@ export const useData = create<DataState>()((set, get) => {
           },
           currency: { status: 'ready', data: demoCurrency(now), updatedAt: Date.now() },
           weather: { status: 'ready', data: demoWeather(now), updatedAt: Date.now() },
+          notifications: {
+            status: 'ready',
+            data: get().notifications.data ?? demoNotifications(now),
+            updatedAt: Date.now(),
+          },
         });
         return;
       }
       await get().flushQueue();
+      void flushSettings();
       const reached = await Promise.all((Object.keys(PATHS) as Key[]).map(loadSlice));
       set({ offline: reached.some((ok) => !ok) });
     },
@@ -296,6 +321,28 @@ export const useData = create<DataState>()((set, get) => {
       submit({ id: crypto.randomUUID(), type: 'delete', taskId: id });
     },
 
+    markRead(ids) {
+      const now = new Date().toISOString();
+      set((s) => {
+        const cur = s.notifications.data;
+        if (!cur) return {};
+        const items = cur.items.map((n) =>
+          n.readAt === null && (ids === 'all' || ids.includes(n.id)) ? { ...n, readAt: now } : n,
+        );
+        return {
+          notifications: {
+            ...s.notifications,
+            data: { items, unread: items.filter((n) => n.readAt === null).length },
+          },
+        };
+      });
+      if (useSession.getState().demo) return;
+      api.post('/api/notifications/read', { ids }).catch(() => {
+        // the server did not take it: show the real state again
+        void loadSlice('notifications');
+      });
+    },
+
     toggleTask(id) {
       const task = get().tasks.data?.find((x) => x.id === id);
       if (task) get().updateTask(id, { status: task.status === 'DONE' ? 'TODO' : 'DONE' });
@@ -328,26 +375,30 @@ export const useData = create<DataState>()((set, get) => {
             },
           }));
           break;
-        case 'notification.created':
-          set((s) =>
-            s.dashboard.data
-              ? {
-                  dashboard: {
-                    ...s.dashboard,
-                    data: {
-                      ...s.dashboard.data,
-                      unreadNotifications: s.dashboard.data.unreadNotifications + 1,
-                    },
-                  },
-                }
-              : {},
-          );
+        case 'notification.created': {
+          const n = msg.payload;
+          set((s) => {
+            const cur = s.notifications.data ?? { items: [], unread: 0 };
+            if (cur.items.some((x) => x.id === n.id)) return {};
+            const items = [n, ...cur.items];
+            return {
+              notifications: {
+                ...s.notifications,
+                status: 'ready',
+                data: { items, unread: items.filter((x) => x.readAt === null).length },
+              },
+            };
+          });
+          const settings = { ...DEFAULT_SETTINGS, ...useSession.getState().settings };
+          if (showSystemNotification(n.category, settings, new Date()))
+            void notifyDesktop(n.title, n.body);
           break;
+        }
         case 'notifications.read':
-          void loadSlice('dashboard');
+          void loadSlice('notifications');
           break;
         case 'settings.changed':
-          useSession.getState().setSettings(msg.payload);
+          adoptServerSettings(msg.payload);
           break;
         default:
           break;
@@ -360,6 +411,7 @@ export const useData = create<DataState>()((set, get) => {
         dashboard: empty(),
         currency: empty(),
         weather: empty(),
+        notifications: empty(),
         offline: false,
       }),
   };

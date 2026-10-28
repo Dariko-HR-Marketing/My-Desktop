@@ -1,4 +1,4 @@
-import { NETWORKS } from '../features/browser/networks';
+import { APPS } from '../features/browser/networks';
 import { GOOGLE_SEARCH, WORK_SITES } from '../features/browser/sites';
 
 export type Address = { kind: 'url' | 'search'; url: string } | { kind: 'invalid' };
@@ -49,9 +49,7 @@ export function hostOf(url: string): string {
 export function appKeyForUrl(url: string): string | null {
   const host = hostOf(url);
   if (!host) return null;
-  return (
-    NETWORKS.find((n) => n.hosts.some((h) => host === h || host.endsWith(`.${h}`)))?.key ?? null
-  );
+  return APPS.find((n) => n.hosts.some((h) => host === h || host.endsWith(`.${h}`)))?.key ?? null;
 }
 
 /** Tab group from what the tab shows: messengers → "muloqot", government/work sites → "ish". */

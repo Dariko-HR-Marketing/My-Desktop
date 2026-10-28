@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { appKeyForUrl, groupForUrl, tabsToSleep } from '../lib/browser';
 import { bridge } from '../lib/browserBridge';
-import { NETWORKS } from '../features/browser/networks';
+import { appByKey } from '../features/browser/networks';
 
 export type GroupId = 'muloqot' | 'ish';
 export const GROUPS: Record<GroupId, { name: string; color: string }> = {
@@ -92,7 +92,7 @@ export const useBrowser = create<BrowserState>()(
       openApp(key) {
         const existing = get().tabs.find((t) => t.appKey === key);
         if (existing) return get().activate(existing.id);
-        const app = NETWORKS.find((n) => n.key === key);
+        const app = appByKey(key);
         if (app) get().openTab({ url: app.url });
       },
 

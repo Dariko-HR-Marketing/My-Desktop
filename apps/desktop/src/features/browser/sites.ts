@@ -20,7 +20,7 @@ export const GOOGLE_SEARCH = 'https://www.google.com/search?q=';
 export const EXTRA_TILES = [
   {
     key: 'google',
-    name: 'browser.start.google',
+    name: 'app.google',
     url: 'https://www.google.com/',
     color: 'var(--app-mail)',
   },

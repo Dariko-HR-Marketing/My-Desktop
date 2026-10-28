@@ -21,8 +21,8 @@ import { applyAppearance } from './lib/appearance';
 import { useUi } from './state/ui';
 
 // Apply the saved theme before the first paint to avoid a light flash.
-const { theme, density } = useUi.getState();
-applyAppearance(theme, density);
+const { theme, density, fontSize } = useUi.getState();
+applyAppearance(theme, density, fontSize);
 
 void restoreSession();
 

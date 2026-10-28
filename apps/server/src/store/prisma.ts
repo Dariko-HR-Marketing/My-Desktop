@@ -54,6 +54,11 @@ export function createPrismaStore(databaseUrl: string): Store {
     language: string;
     pinnedApps: string[];
     navCollapsed: boolean;
+    fontSize: string;
+    quietEnabled: boolean;
+    quietFrom: string;
+    quietTo: string;
+    sleepMinutes: number;
   }) =>
     ({
       theme: row.theme,
@@ -61,6 +66,11 @@ export function createPrismaStore(databaseUrl: string): Store {
       language: row.language,
       pinnedApps: row.pinnedApps,
       navCollapsed: row.navCollapsed,
+      fontSize: row.fontSize,
+      quietEnabled: row.quietEnabled,
+      quietFrom: row.quietFrom,
+      quietTo: row.quietTo,
+      sleepMinutes: row.sleepMinutes,
     }) as UserSettings;
 
   return {
