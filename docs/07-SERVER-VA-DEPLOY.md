@@ -8,7 +8,7 @@
 | OS | Ubuntu 24.04 |
 | Resurs | 2 vCPU · 2 GB RAM · 40 GB disk |
 | IP | 95.130.227.92 |
-| Domen | vps12546.eskiz.uz |
+| Domen | my-desk.tajriba24.uz |
 
 > Eslatma: skrinshotda RAM ~41 % va disk ~50 % allaqachon band. Serverda boshqa xizmat ishlayotgan boʻlishi mumkin — oʻrnatishdan oldin `docker ps`, `ss -tlnp` (80/443 portlar bandmi) va `df -h` bilan tekshiring.
 
@@ -43,7 +43,7 @@ API konteyneri ishga tushganda: `prisma migrate deploy` (yoki MVP da `db push`) 
 ## 4. Muhit oʻzgaruvchilari (`/opt/my-desktop/deploy/.env` — repozitoriyga tushmaydi)
 
 ```
-DOMAIN=vps12546.eskiz.uz
+DOMAIN=my-desk.tajriba24.uz
 POSTGRES_PASSWORD=<openssl rand -base64 48>
 JWT_SECRET=<openssl rand -base64 48>
 SEED_ADMIN_PASSWORD=<kamida 10 belgi, birinchi kirishdan keyin almashtiring>
@@ -71,7 +71,7 @@ CORS_ORIGINS=tauri://localhost,http://tauri.localhost
 | `SSH_HOST` | `95.130.227.92` |
 | `SSH_USER` | `deploy` |
 | `SSH_PRIVATE_KEY` | GitHub Actions uchun alohida yaratilgan ED25519 kalitning **yopiq** qismi |
-| `DOMAIN` | `vps12546.eskiz.uz` |
+| `DOMAIN` | `my-desk.tajriba24.uz` |
 
 Kalit yaratish (oʻz kompyuteringizda): `ssh-keygen -t ed25519 -C "github-deploy" -f deploy_key` → `deploy_key.pub` serverdagi `/home/deploy/.ssh/authorized_keys` ga, `deploy_key` — `SSH_PRIVATE_KEY` secret'iga. **Parol va kalitlarni chatga yoki kodga yozmang.**
 
@@ -90,4 +90,4 @@ Kalit yaratish (oʻz kompyuteringizda): `ssh-keygen -t ed25519 -C "github-deploy
 
 - Kichik tashkilot: Release'dan `.msi` ni yuklab, har kompyuterga oʻrnatish.
 - Katta tashkilot: guruh siyosati (GPO) yoki Intune orqali jim oʻrnatish: `msiexec /i IshMaydoni.msi /qn`.
-- Birinchi ishga tushishda server manzili (`https://vps12546.eskiz.uz`) — oʻrnatmaga oldindan yozilgan yoki Sozlamalarda.
+- Birinchi ishga tushishda server manzili (`https://my-desk.tajriba24.uz`) — oʻrnatmaga oldindan yozilgan yoki Sozlamalarda.

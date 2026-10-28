@@ -1,6 +1,6 @@
 # 05 · Server API
 
-Asosiy manzil: `https://<DOMAIN>` (masalan, `https://vps12546.eskiz.uz`). Format — JSON. Vaqtlar — ISO 8601 (UTC, `Z`).
+Asosiy manzil: `https://<DOMAIN>` (masalan, `https://my-desk.tajriba24.uz`). Format — JSON. Vaqtlar — ISO 8601 (UTC, `Z`).
 Himoyalangan endpointlar: `Authorization: Bearer <JWT>`.
 
 ## Xato formati

@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import type { User } from '@ish-maydoni/shared';
 import type { UserRecord } from '../domain/types.js';
-import { JWT_EXPIRES_IN } from '../plugins/auth.js';
 import type { Deps } from '../app.js';
 
 export const toPublicUser = (u: UserRecord): User => ({
@@ -36,7 +35,10 @@ export function authRoutes(app: FastifyInstance, { store, config }: Deps) {
           .code(401)
           .send({ error: 'invalid_credentials', message: 'Login yoki parol notoʻgʻri' });
       }
-      const token = app.jwt.sign({ sub: user.id, role: user.role }, { expiresIn: JWT_EXPIRES_IN });
+      const token = app.jwt.sign(
+        { sub: user.id, role: user.role },
+        { expiresIn: config.JWT_EXPIRES_IN },
+      );
       return { token, user: toPublicUser(user) };
     },
   );

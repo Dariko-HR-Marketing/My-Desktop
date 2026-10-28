@@ -16,7 +16,7 @@ Har bir band bajarilgani tekshirilib, belgilanadi.
 - [ ] Xodim bildirishnoma yubora olmaydi (403); rahbar yubora oladi va u WebSocket orqali ≤ 2 s da keladi
 - [ ] `/api/catalog/modules` — xodimga «Rahbar paneli» qaytmaydi
 - [ ] Valyuta: USD, EUR, RUB…; tashqi manba oʻchsa — oxirgi qiymat `stale: true`
-- [ ] Docker: `docker compose up -d --build` → `https://vps12546.eskiz.uz/health` = `ok`, HTTPS sertifikati haqiqiy
+- [ ] Docker: `docker compose up -d --build` → `https://my-desk.tajriba24.uz/health` = `ok`, HTTPS sertifikati haqiqiy
 
 ## Desktop — qobiq va adaptivlik
 - [ ] Chap menyu: 3 guruh, modul bitta qator, tarmoqlar yigʻiladi, yigʻish tugmasi 248 ↔ 72 px

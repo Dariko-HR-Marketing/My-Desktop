@@ -14,8 +14,6 @@ declare module 'fastify' {
   }
 }
 
-export const JWT_EXPIRES_IN = '12h';
-
 export async function authenticate(req: FastifyRequest, reply: FastifyReply): Promise<void> {
   try {
     await req.jwtVerify();
