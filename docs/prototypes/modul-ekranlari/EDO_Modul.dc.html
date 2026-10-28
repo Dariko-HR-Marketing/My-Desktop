@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Hujjat aylanishi moduli</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F3F4F6}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #15171C; background: #F3F4F6; min-height: 1000px; display: flex; flex-wrap: wrap; align-items: stretch">
+
+  <nav aria-label="Asosiy menyu" style="flex: 1 1 232px; background: #111827; padding: 20px 14px; box-sizing: border-box; display: flex; flex-direction: column; gap: 2px">
+    <div style="display: flex; align-items: center; gap: 12px; padding: 4px 8px 18px">
+      <div style="width: 36px; height: 36px; border-radius: 9px; background: #2F5BEA; color: #FFFFFF; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center">IM</div>
+      <div>
+        <div style="color: #FFFFFF; font-weight: 600; font-size: 16px">Ish maydoni</div>
+        <div style="color: #9AA3B2; font-size: 12px">[Tashkilot nomi]</div>
+      </div>
+    </div>
+    <sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+      <div style="color: #8B94A5; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; padding: 14px 12px 6px">{{g.name}}</div>
+      <sc-for list="{{g.items}}" as="item" hint-placeholder-count="4">
+        <a href="{{item.href}}" aria-current="{{item.current}}" style="{{item.style}}">
+          <span style="{{item.iconBox}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{item.d}}"></path></svg></span>
+          <span style="flex: 1; min-width: 0"><span style="display: block">{{item.label}}</span><sc-if value="{{item.hasSub}}" hint-placeholder-val="{{false}}"><span style="display: block; font-size: 11px; color: #9AA3B2; font-weight: 400">{{item.sub}}</span></sc-if></span>
+          <sc-if value="{{item.hasBadge}}" hint-placeholder-val="{{false}}"><span style="{{item.badgeStyle}}">{{item.badge}}</span></sc-if>
+        </a>
+      </sc-for>
+    </sc-for>
+    <div style="margin-top: auto; padding-top: 14px; border-top: 1px solid #263042; display: flex; align-items: center; gap: 10px; padding-left: 8px">
+      <div style="width: 34px; height: 34px; border-radius: 50%; background: #DCE5FB; color: #1E3A8A; font-weight: 600; display: flex; align-items: center; justify-content: center; font-size: 13px">AK</div>
+      <div><div style="color: #FFFFFF; font-size: 13px; font-weight: 600">[F.I.Sh.]</div><div style="color: #9AA3B2; font-size: 12px">Bosh mutaxassis</div></div>
+    </div>
+  </nav>
+
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 14px 28px; background: #FFFFFF">
+      <div style="display: flex; align-items: center; gap: 12px">
+        <span style="width: 40px; height: 40px; border-radius: 10px; background: #EEF2FD; color: #1D4ED8; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5M9 13h6M9 17h6"></path></svg></span>
+        <div>
+          <h1 style="margin: 0; font-size: 20px; font-weight: 600">Hujjat aylanishi</h1>
+          <div style="font-size: 12px; color: #5F6672">Modul · elektron hujjat aylanishi tizimiga ulangan</div>
+        </div>
+      </div>
+      <div style="margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap">
+        <label style="width: 280px; display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border: 1px solid #D5D9E0; border-radius: 10px; background: #F8F9FB; box-sizing: border-box; color: #5F6672">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3"></path></svg>
+          <input type="search" aria-label="Modulda qidirish" placeholder="Raqam, nom yoki yuboruvchi" style="flex: 1; min-width: 0; border: 0; background: transparent; outline: none; font: inherit; font-size: 13px">
+        </label>
+        <button type="button" style="height: 40px; padding: 0 14px; border: 1px solid #D5D9E0; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Shablonlar</button>
+        <button type="button" style="height: 40px; padding: 0 14px; border: 0; border-radius: 10px; background: #1D4ED8; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">+ Yangi hujjat</button>
+      </div>
+    </header>
+    <div role="tablist" aria-label="Modul boʻlimlari" style="display: flex; gap: 4px; padding: 0 28px; background: #FFFFFF; border-bottom: 1px solid #E3E5EA; flex-wrap: wrap">
+      <sc-for list="{{subtabs}}" as="t" hint-placeholder-count="5">
+        <a href="{{t.href}}" role="tab" aria-selected="{{t.sel}}" style="{{t.style}}">{{t.n}}<sc-if value="{{t.hasC}}" hint-placeholder-val="{{false}}"><span style="{{t.cStyle}}">{{t.c}}</span></sc-if></a>
+      </sc-for>
+    </div>
+
+    <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 1240px; box-sizing: border-box">
+      <section aria-label="Koʻrsatkichlar" style="display: flex; flex-wrap: wrap; gap: 16px">
+        <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+          <a href="{{k.href}}" style="flex: 1 1 180px; background: #FFFFFF; border: 1px solid #E3E5EA; border-radius: 12px; padding: 18px; text-decoration: none; color: #15171C; display: flex; flex-direction: column; gap: 8px">
+            <span style="font-size: 13px; color: #4A505C; font-weight: 500">{{k.l}}</span>
+            <span style="{{k.vStyle}}">{{k.v}}</span>
+            <span style="font-size: 12px; color: #4A505C">{{k.s}}</span>
+          </a>
+        </sc-for>
+      </section>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+        <section style="flex: 3 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E5EA; border-radius: 12px; padding: 18px 20px 6px">
+          <div style="display: flex; align-items: center; margin-bottom: 6px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600">Imzo kutayotgan hujjatlar</h2>
+            <a href="Hujjatlar.dc.html" style="margin-left: auto; font-size: 13px; font-weight: 600; text-decoration: none">Barchasi →</a>
+          </div>
+          <sc-for list="{{sign}}" as="d" hint-placeholder-count="4">
+            <div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid #EEF0F3">
+              <div style="flex: 1; min-width: 0">
+                <div style="font-size: 14px; font-weight: 600">{{d.t}}</div>
+                <div style="font-size: 12px; color: #5F6672; margin-top: 3px">{{d.m}}</div>
+              </div>
+              <span style="{{d.chip}}">{{d.due}}</span>
+              <a href="Hujjatlar.dc.html" style="height: 40px; padding: 0 12px; border-radius: 10px; background: #EEF2FD; color: #1D4ED8; font-size: 13px; font-weight: 600; text-decoration: none; display: flex; align-items: center">Imzolash</a>
+            </div>
+          </sc-for>
+        </section>
+
+        <section style="flex: 2 1 340px; min-width: 0; background: #FFFFFF; border: 1px solid #E3E5EA; border-radius: 12px; padding: 18px 20px 6px">
+          <div style="display: flex; align-items: center; margin-bottom: 6px">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 600">Yaqin ijro muddatlari</h2>
+            <a href="Ijro.dc.html" style="margin-left: auto; font-size: 13px; font-weight: 600; text-decoration: none">Ijro nazorati →</a>
+          </div>
+          <sc-for list="{{ijro}}" as="r" hint-placeholder-count="5">
+            <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid #EEF0F3">
+              <span style="flex: 1; min-width: 0; font-size: 14px">{{r.t}}</span>
+              <span style="{{r.lStyle}}">{{r.l}}</span>
+            </div>
+          </sc-for>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const active = "edo";
+    const P = {
+      home: "M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+      todo: "M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11",
+      cal: "M7 3v4M17 3v4M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z",
+      browser: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3c2.5 2.5 3.8 5.5 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.5-3.8-9S9.5 5.5 12 3z",
+      edo: "M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5M9 13h6M9 17h6",
+      hr: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8",
+      boss: "M4 20V10M10 20V4M16 20v-7M22 20H2",
+      tg: "M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z",
+      wa: "M21 12a9 9 0 0 1-13.5 7.8L3 21l1.2-4.5A9 9 0 1 1 21 12zM8 12h.01M12 12h.01M16 12h.01",
+      ig: "M4 7h3l2-3h6l2 3h3v13H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+      fb: "M7 10v11M15 5.9 14 10h5.8a2 2 0 0 1 2 2.3l-1.4 7A2 2 0 0 1 18.4 21H7V10l4-8a3 3 0 0 1 4 3.9z",
+      yt: "M3 5h18v14H3zM10 9l5 3-5 3z",
+      plus: "M12 5v14M5 12h14"
+    };
+    const tint = { tg: "#2B6CB0", wa: "#1F8A52", ig: "#B83280", fb: "#3B5BDB", yt: "#C4282E" };
+    const base = "display:flex;align-items:center;gap:10px;min-height:40px;padding:4px 10px;border-radius:8px;text-decoration:none;font-size:14px;box-sizing:border-box;";
+    const pill = "min-width:22px;height:22px;padding:0 7px;border-radius:11px;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;box-sizing:border-box;";
+    const mk = (key, label, href, opts) => {
+      const o = opts || {};
+      const on = key === active;
+      return {
+        label, href, d: P[key], badge: o.badge || "", hasBadge: !!o.badge, sub: o.sub || "", hasSub: !!o.sub,
+        current: on ? "page" : "false",
+        style: base + (on ? "color:#FFFFFF;background:#22304D;font-weight:600;" : "color:#C9CED8;font-weight:500;"),
+        iconBox: tint[key] ? "width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:none;color:#FFFFFF;background:" + tint[key] + ";" : "width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex:none;",
+        badgeStyle: pill + (o.red ? "background:#C4282E;color:#FFFFFF;" : "background:#2A3550;color:#E4E7EE;")
+      };
+    };
+    const groups = [
+      { name: "ASOSIY", items: [mk("home", "Bosh sahifa", "Main.dc.html"), mk("todo", "Vazifalarim", "Vazifalar.dc.html", { badge: "5" }), mk("cal", "Kalendar", "#"), mk("browser", "Brauzer", "Brauzer_Start.dc.html")] },
+      { name: "MODULLAR", items: [mk("edo", "Hujjat aylanishi", "EDO_Modul.dc.html", { badge: "4", sub: "Hujjatlar · Ijro · Topshiriqlar" }), mk("hr", "Kadrlar xizmatlari", "Xizmatlar.dc.html"), mk("boss", "Rahbar paneli", "Rahbar.dc.html")] },
+      { name: "TARMOQLAR VA MESSENJERLAR", items: [mk("tg", "Telegram", "Brauzer.dc.html", { badge: "12", red: true }), mk("wa", "WhatsApp", "Brauzer.dc.html", { badge: "3", red: true }), mk("ig", "Instagram", "Brauzer.dc.html"), mk("fb", "Facebook", "Brauzer.dc.html"), mk("yt", "YouTube", "Brauzer.dc.html"), mk("plus", "Qoʻshish", "Brauzer_Start.dc.html")] }
+    ];
+    const tBase = "height:46px;padding:0 14px;display:flex;align-items:center;gap:8px;font-size:14px;text-decoration:none;box-sizing:border-box;";
+    const T = (n, href, c, sel) => ({ n, href, c: c || "", hasC: !!c, sel: sel ? "true" : "false", style: tBase + (sel ? "color:#15171C;font-weight:600;box-shadow:inset 0 -2px 0 #1D4ED8;" : "color:#4A505C;font-weight:500;"), cStyle: "font-size:12px;padding:1px 7px;border-radius:10px;" + (sel ? "background:#E8EEFC;color:#1D4ED8;" : "background:#EEF0F3;color:#4A505C;") });
+    const subtabs = [T("Umumiy", "EDO_Modul.dc.html", null, true), T("Hujjatlar", "Hujjatlar.dc.html", "4"), T("Ijro nazorati", "Ijro.dc.html", "2"), T("Topshiriqlar", "Vazifalar.dc.html", "12"), T("Hisobotlar", "#")];
+    const vb = "font-size:30px;font-weight:600;line-height:1;";
+    const kpis = [
+      { l: "Imzo kutmoqda", v: "4", vStyle: vb + "color:#1D4ED8;", s: "1 tasi bugun muddatli", href: "Hujjatlar.dc.html" },
+      { l: "Kiruvchi", v: "12", vStyle: vb, s: "3 tasi oʻqilmagan", href: "Hujjatlar.dc.html" },
+      { l: "Kelishuvda", v: "3", vStyle: vb, s: "Siz yuborgan hujjatlar", href: "Hujjatlar.dc.html" },
+      { l: "Muddati oʻtgan", v: "2", vStyle: vb + "color:#B42318;", s: "1 topshiriq · 1 toʻlov", href: "Ijro.dc.html" }
+    ];
+    const chip = "display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:12px;font-size:12px;font-weight:600;white-space:nowrap;";
+    const tone = { red: chip + "background:#FDECEA;color:#B42318;", amber: chip + "background:#FFF1DB;color:#8A4B00;", gray: chip + "background:#EEF0F3;color:#4A505C;" };
+    const sign = [
+      { t: "Hamkorlik shartnomasi loyihasi boʻyicha xizmat xati", m: "№ 03-12/458 · Huquq boʻlimi", due: "Bugun 18:00", chip: tone.amber },
+      { t: "Buyruq loyihasi: 2027-yil taʼtil jadvali", m: "№ K-214 · Kadrlar boʻlimi", due: "Ertaga", chip: tone.amber },
+      { t: "Ombor inventarizatsiyasi dalolatnomasi", m: "№ XB-77 · Xoʻjalik boʻlimi", due: "30-okt", chip: tone.gray },
+      { t: "Hisob-faktura № 118 — toʻlovga ruxsat", m: "№ 118 · Buxgalteriya", due: "Kechikdi", chip: tone.red }
+    ];
+    const lt = (c) => "font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:" + c + ";";
+    const ijro = [
+      { t: "14-son topshiriq boʻyicha maʼlumot", l: "−2 kun", lStyle: lt("#B42318") },
+      { t: "Murojaat № M-2041", l: "8 soat", lStyle: lt("#8A4B00") },
+      { t: "Tender hujjatlari xulosasi", l: "Bugun", lStyle: lt("#8A4B00") },
+      { t: "III chorak statistik hisoboti", l: "1 kun", lStyle: lt("#8A4B00") },
+      { t: "Ichki nizom loyihasi", l: "4 kun", lStyle: lt("#34383F") }
+    ];
+    return { groups, subtabs, kpis, sign, ijro };
+  }
+}
+</script>
+</body>
+</html>

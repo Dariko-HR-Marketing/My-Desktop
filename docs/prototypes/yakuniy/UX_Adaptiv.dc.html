@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Adaptiv tizim va dizayn tokenlari</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+</style>
+</helmet>
+<div style="width: 1600px; height: 1000px; box-sizing: border-box; padding: 48px 64px; background: #FFFFFF; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #15171C; display: flex; flex-direction: column; gap: 28px">
+  <div>
+    <h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.01em">Adaptiv tizim va dizayn tokenlari</h1>
+    <p style="margin: 6px 0 0; font-size: 15px; color: #4A505C">Bitta dizayn tizimi — toʻrt oʻlcham. Tartib oʻzgaradi, maʼno va ranglar oʻzgarmaydi.</p>
+  </div>
+
+  <div style="display: flex; gap: 24px; align-items: stretch">
+    <sc-for list="{{bps}}" as="b" hint-placeholder-count="4">
+      <section style="flex: 1; min-width: 0; border-radius: 14px; background: #F6F7F9; padding: 18px; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; align-items: baseline; gap: 8px"><span style="font-size: 16px; font-weight: 700">{{b.name}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #4A505C">{{b.range}}</span></div>
+        <div style="height: 210px; display: flex; align-items: center; justify-content: center">
+          <div style="{{b.frame}}">
+            <sc-if value="{{b.side}}" hint-placeholder-val="{{true}}"><span style="{{b.nav}}"></span></sc-if>
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 5px; padding: 6px; min-width: 0">
+              <span style="height: 10px; border-radius: 3px; background: #DDE2EA"></span>
+              <span style="{{b.body}}">
+                <span style="{{b.main}}"><span style="height: 18px; border-radius: 3px; background: #C9D6F7"></span><span style="height: 40px; border-radius: 3px; background: #E3E6EA"></span><span style="height: 40px; border-radius: 3px; background: #E3E6EA"></span></span>
+                <sc-if value="{{b.twoCol}}" hint-placeholder-val="{{true}}"><span style="flex: 1; display: flex; flex-direction: column; gap: 5px"><span style="height: 30px; border-radius: 3px; background: #E3E6EA"></span><span style="height: 30px; border-radius: 3px; background: #E3E6EA"></span></span></sc-if>
+              </span>
+            </span>
+            <sc-if value="{{b.bottom}}" hint-placeholder-val="{{false}}"><span style="position: absolute; left: 0; right: 0; bottom: 0; height: 18px; background: #111827; border-radius: 0 0 10px 10px"></span></sc-if>
+          </div>
+        </div>
+        <ul style="margin: 0; padding-left: 16px; font-size: 13px; line-height: 1.55; color: #34383F">
+          <sc-for list="{{b.rules}}" as="r" hint-placeholder-count="4"><li>{{r.t}}</li></sc-for>
+        </ul>
+      </section>
+    </sc-for>
+  </div>
+
+  <div style="display: flex; gap: 24px; flex: 1; min-height: 0">
+    <section style="flex: 1.3; border-radius: 14px; border: 1px solid #E3E5EA; padding: 18px">
+      <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: #4A505C">RANG TOKENLARI</div>
+      <sc-for list="{{themes}}" as="th" hint-placeholder-count="2">
+        <div style="margin-top: 12px; font-size: 13px; font-weight: 600">{{th.name}}</div>
+        <div style="display: flex; gap: 8px; margin-top: 6px">
+          <sc-for list="{{th.chips}}" as="c" hint-placeholder-count="7">
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 4px"><span style="{{c.sw}}"></span><span style="font-size: 11px; color: #34383F">{{c.n}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #5F6672">{{c.hex}}</span></span>
+          </sc-for>
+        </div>
+      </sc-for>
+    </section>
+    <section style="flex: 1; border-radius: 14px; border: 1px solid #E3E5EA; padding: 18px">
+      <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: #4A505C">TIPOGRAFIYA · IBM PLEX SANS</div>
+      <sc-for list="{{type}}" as="t" hint-placeholder-count="5">
+        <div style="display: flex; align-items: baseline; gap: 12px; margin-top: 10px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5F6672; width: 64px">{{t.spec}}</span><span style="{{t.style}}">{{t.sample}}</span></div>
+      </sc-for>
+    </section>
+    <section style="flex: 1; border-radius: 14px; border: 1px solid #E3E5EA; padding: 18px; display: flex; flex-direction: column; gap: 14px">
+      <div>
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: #4A505C">BOʻSHLIQ · 4 PX QADAM</div>
+        <div style="display: flex; align-items: flex-end; gap: 10px; margin-top: 10px">
+          <sc-for list="{{space}}" as="s" hint-placeholder-count="6"><span style="display: flex; flex-direction: column; align-items: center; gap: 4px"><span style="{{s.box}}"></span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #5F6672">{{s.n}}</span></span></sc-for>
+        </div>
+      </div>
+      <div>
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: #4A505C">ZICHLIK</div>
+        <div style="display: flex; gap: 10px; margin-top: 10px">
+          <span style="flex: 1; height: 44px; border-radius: 10px; background: #1D4ED8; color: #FFFFFF; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center">Qulay · 44</span>
+          <span style="flex: 1; height: 36px; border-radius: 8px; background: #1D4ED8; color: #FFFFFF; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; align-self: center">Ixcham · 36</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: #4A505C">BURCHAKLAR</div>
+        <div style="display: flex; gap: 10px; margin-top: 10px">
+          <span style="width: 44px; height: 44px; border-radius: 6px; background: #E3E6EA"></span>
+          <span style="width: 44px; height: 44px; border-radius: 10px; background: #E3E6EA"></span>
+          <span style="width: 44px; height: 44px; border-radius: 14px; background: #E3E6EA"></span>
+          <span style="font-size: 12px; color: #4A505C; align-self: center">6 · 10 · 14 px</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1600,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const frame = (w, h) => "position:relative;width:" + w + "px;height:" + h + "px;border-radius:10px;background:#FFFFFF;box-shadow:0 0 0 1px #D5D9E0;display:flex;overflow:hidden;";
+    const nav = (w) => "width:" + w + "px;flex:none;background:#111827;";
+    const bps = [
+      { name: "Desktop", range: "≥ 1280 px", frame: frame(300, 190), side: true, nav: nav(46), twoCol: true, bottom: false,
+        body: "display:flex;gap:5px;flex:1;", main: "flex:2;display:flex;flex-direction:column;gap:5px;",
+        rules: [{ t: "Toʻliq menyu 248 px, guruhlar bilan" }, { t: "12 ustun · oraliq 24 · chet 32 px" }, { t: "Kontent 2 ustun: asosiy + yordamchi" }, { t: "Maks. kenglik 1240 px, markazda" }] },
+      { name: "Noutbuk", range: "1024–1279", frame: frame(260, 166), side: true, nav: nav(16), twoCol: true, bottom: false,
+        body: "display:flex;gap:5px;flex:1;", main: "flex:2;display:flex;flex-direction:column;gap:5px;",
+        rules: [{ t: "Menyu ikonkalarga qisqaradi (72 px)" }, { t: "Nom hover'da; brauzerda avtomatik" }, { t: "12 ustun · oraliq 24 · chet 24 px" }, { t: "Oʻng ustun 320 px gacha torayadi" }] },
+      { name: "Planshet", range: "600–1023", frame: frame(150, 200), side: true, nav: nav(14), twoCol: false, bottom: false,
+        body: "display:flex;flex:1;", main: "flex:1;display:flex;flex-direction:column;gap:5px;",
+        rules: [{ t: "Ikonka-menyu, kontent 1 ustun" }, { t: "8 ustun · oraliq 16 · chet 24 px" }, { t: "Koʻrsatkichlar 2×2" }, { t: "Hamma tugma 44 px (barmoq)" }] },
+      { name: "Telefon", range: "< 600 px", frame: frame(96, 196), side: false, nav: "", twoCol: false, bottom: true,
+        body: "display:flex;flex:1;", main: "flex:1;display:flex;flex-direction:column;gap:5px;",
+        rules: [{ t: "Pastki panel: 5 ta boʻlim" }, { t: "4 ustun · oraliq 16 · chet 16 px" }, { t: "Kartalar toʻliq kenglikda" }, { t: "Brauzer manzil satri pastda" }] }
+    ];
+    const sw = (hex, line) => "height:34px;border-radius:8px;background:" + hex + ";" + (line ? "box-shadow:inset 0 0 0 1px #D5D9E0;" : "");
+    const C = (n, hex, line) => ({ n, hex, sw: sw(hex, line) });
+    const themes = [
+      { name: "Yorugʻ", chips: [C("Fon", "#F3F4F6", true), C("Sirt", "#FFFFFF", true), C("Matn", "#15171C"), C("Asosiy", "#1D4ED8"), C("Kechikkan", "#B42318"), C("Yaqin", "#8A4B00"), C("Bajarildi", "#1E6B3C")] },
+      { name: "Tungi", chips: [C("Fon", "#14161B"), C("Sirt", "#1E2128"), C("Matn", "#E8EAEE", true), C("Asosiy", "#7FA2FF"), C("Kechikkan", "#FF8A80"), C("Yaqin", "#F5B860"), C("Bajarildi", "#6FD39A")] }
+    ];
+    const type = [
+      { spec: "28 / 600", sample: "Sarlavha", style: "font-size:28px;font-weight:600;" },
+      { spec: "20 / 600", sample: "Boʻlim nomi", style: "font-size:20px;font-weight:600;" },
+      { spec: "16 / 600", sample: "Karta sarlavhasi", style: "font-size:16px;font-weight:600;" },
+      { spec: "14 / 400", sample: "Asosiy matn — oʻ, gʻ, ʼ, кирилл", style: "font-size:14px;" },
+      { spec: "12 / 500", sample: "Izoh va yorliqlar", style: "font-size:12px;font-weight:500;color:#4A505C;" }
+    ];
+    const space = [4, 8, 12, 16, 24, 32].map((n) => ({ n: String(n), box: "width:" + n + "px;height:" + n + "px;border-radius:2px;background:#1D4ED8;" }));
+    return { bps, themes, type, space };
+  }
+}
+</script>
+</body>
+</html>

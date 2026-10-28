@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Noutbuk — ichki brauzer</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F3F4F6}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+</style>
+</helmet>
+<div style="font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #15171C; background: #FFFFFF; min-height: 800px; display: flex; align-items: stretch">
+
+  <nav aria-label="Asosiy menyu (ixcham)" style="flex: 0 0 72px; background: #111827; padding: 12px 0; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative">
+    <div style="width: 36px; height: 36px; border-radius: 9px; background: #2F5BEA; color: #FFFFFF; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px">IM</div>
+    <sc-for list="{{nav}}" as="it" hint-placeholder-count="10">
+      <sc-if value="{{it.div}}" hint-placeholder-val="{{false}}"><span style="width: 32px; height: 1px; background: #263042; margin: 6px 0"></span></sc-if>
+      <button type="button" aria-label="{{it.label}}" aria-pressed="{{it.pressed}}" onClick="{{it.pick}}" onMouseEnter="{{it.enter}}" onMouseLeave="{{it.leave}}" style="{{it.style}}">
+        <span style="{{it.iconBox}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{it.d}}"></path></svg></span>
+        <sc-if value="{{it.hasBadge}}" hint-placeholder-val="{{false}}"><span style="{{it.badgeStyle}}">{{it.badge}}</span></sc-if>
+        <sc-if value="{{it.tip}}" hint-placeholder-val="{{false}}"><span style="position: absolute; left: 54px; top: 8px; white-space: nowrap; padding: 5px 10px; border-radius: 7px; background: #15171C; color: #FFFFFF; font-size: 12px; font-weight: 500; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.2)">{{it.tipText}}</span></sc-if>
+      </button>
+    </sc-for>
+    <a href="UX_Desktop.dc.html" aria-label="Menyuni ochish" style="margin-top: auto; width: 44px; height: 44px; border-radius: 10px; background: #1A2335; color: #C9CED8; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17l5-5-5-5M6 17l5-5-5-5"></path></svg></a>
+  </nav>
+
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+    <div role="tablist" aria-label="Brauzer tablari" style="display: flex; align-items: flex-end; gap: 2px; padding: 8px 10px 0; background: #E9EBEF; overflow-x: auto">
+      <sc-for list="{{tabGroups}}" as="tg" hint-placeholder-count="2">
+        <span style="{{tg.label}}">{{tg.name}}</span>
+        <sc-for list="{{tg.tabs}}" as="tb" hint-placeholder-count="2">
+          <button type="button" role="tab" aria-selected="{{tb.sel}}" onClick="{{tb.pick}}" style="{{tb.style}}">
+            <span style="{{tb.dot}}"></span>
+            <span style="flex: 1; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{tb.name}}</span>
+            <sc-if value="{{tb.sleep}}" hint-placeholder-val="{{false}}"><span style="font-size: 10px; color: #5F6672">uxlamoqda</span></sc-if>
+            <sc-if value="{{tb.hasBadge}}" hint-placeholder-val="{{false}}"><span style="min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 9px; background: #C4282E; color: #FFFFFF; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{tb.badge}}</span></sc-if>
+          </button>
+        </sc-for>
+      </sc-for>
+      <a href="Brauzer_Start.dc.html" aria-label="Yangi tab" style="width: 34px; height: 34px; flex: none; color: #3B4049; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></a>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 4px; padding: 6px 10px; border-bottom: 1px solid #E3E5EA">
+      <button type="button" aria-label="Ortga" style="width: 36px; height: 36px; border: 0; border-radius: 8px; background: transparent; color: #3B4049; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+      <button type="button" aria-label="Oldinga" style="width: 36px; height: 36px; border: 0; border-radius: 8px; background: transparent; color: #A0A5AE; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></button>
+      <button type="button" aria-label="Yangilash" style="width: 36px; height: 36px; border: 0; border-radius: 8px; background: transparent; color: #3B4049; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 4v5h-5"></path></svg></button>
+      <div role="search" aria-label="Manzil, Google yoki tashkilot ichidan qidirish" style="flex: 1; min-width: 0; height: 38px; margin: 0 4px; border-radius: 19px; background: #F1F2F5; display: flex; align-items: center; gap: 8px; padding: 0 14px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1E6B3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Xavfsiz ulanish"><path d="M5 11h14v10H5zM8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+        <span style="flex: 1; min-width: 0; font-size: 14px; color: #34383F; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{cur.url}}</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5F6672">Ctrl K</span>
+      </div>
+      <button type="button" aria-label="Rasm ichida rasm" style="width: 36px; height: 36px; border: 0; border-radius: 8px; background: transparent; color: #3B4049; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18v14H3zM12 12h7v5h-7z"></path></svg></button>
+      <button type="button" aria-label="Yonma-yon" style="width: 36px; height: 36px; border: 0; border-radius: 8px; background: transparent; color: #3B4049; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18v16H3zM12 4v16"></path></svg></button>
+      <button type="button" aria-label="Yuklab olinganlar" style="width: 36px; height: 36px; border: 0; border-radius: 8px; background: transparent; color: #3B4049; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"></path></svg></button>
+      <span style="width: 1px; height: 24px; background: #E3E5EA; margin: 0 4px"></span>
+      <button type="button" style="height: 36px; padding: 0 12px; border: 1px solid #C9D6FA; background: #EEF2FD; color: #1D4ED8; border-radius: 9px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer">AI</button>
+      <a href="UX_Bildirishnoma.dc.html" aria-label="Bildirishnomalar, 6 ta yangi" style="position: relative; width: 36px; height: 36px; border-radius: 9px; color: #3B4049; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"></path></svg><span style="position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; border-radius: 50%; background: #C4282E"></span></a>
+      <span style="width: 34px; height: 34px; border-radius: 50%; background: #DCE5FB; color: #1E3A8A; font-weight: 600; font-size: 12px; display: flex; align-items: center; justify-content: center">AK</span>
+    </div>
+
+    <div style="flex: 1; min-height: 704px; position: relative; overflow: hidden">
+      <sc-if value="{{isYt}}" hint-placeholder-val="{{true}}">
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; padding: 18px 20px">
+          <div style="flex: 3 1 460px; min-width: 0">
+            <div style="width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; background: #15171C; display: flex; align-items: center; justify-content: center; position: relative">
+              <span style="width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,0.16); display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></span>
+              <span style="position: absolute; left: 14px; right: 14px; bottom: 12px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.22)"><span style="display: block; width: 36%; height: 4px; border-radius: 2px; background: #FFFFFF"></span></span>
+            </div>
+            <div style="margin-top: 12px; font-size: 17px; font-weight: 600">[Video nomi]</div>
+          </div>
+          <div style="flex: 1 1 220px; display: flex; flex-direction: column; gap: 10px">
+            <sc-for list="{{rows}}" as="s" hint-placeholder-count="5"><div style="display: flex; gap: 10px"><span style="width: 120px; height: 68px; flex: none; border-radius: 8px; background: #E6E8EC"></span><span style="flex: 1; display: flex; flex-direction: column; gap: 7px; padding-top: 4px"><span style="height: 10px; border-radius: 4px; background: #DADDE2; width: 92%"></span><span style="height: 9px; border-radius: 4px; background: #E6E8EC; width: 60%"></span></span></div></sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{isChat}}" hint-placeholder-val="{{false}}">
+        <div style="display: flex; height: 704px">
+          <div style="width: 300px; flex: none; border-right: 1px solid #EEF0F3; padding: 10px; box-sizing: border-box; display: flex; flex-direction: column; gap: 2px">
+            <div style="height: 34px; border-radius: 17px; background: #F1F2F5; margin-bottom: 8px"></div>
+            <sc-for list="{{chats}}" as="c" hint-placeholder-count="8"><div style="{{c.row}}"><span style="width: 42px; height: 42px; flex: none; border-radius: 50%; background: #DDE2EA"></span><span style="flex: 1; display: flex; flex-direction: column; gap: 7px"><span style="height: 10px; border-radius: 4px; background: #D3D7DE; width: 55%"></span><span style="height: 9px; border-radius: 4px; background: #E3E6EA; width: 85%"></span></span></div></sc-for>
+          </div>
+          <div style="{{chatBg}}">
+            <span style="align-self: flex-start; width: 44%; height: 46px; border-radius: 14px; background: #FFFFFF"></span>
+            <span style="{{me1}}"></span>
+            <span style="align-self: flex-start; width: 52%; height: 66px; border-radius: 14px; background: #FFFFFF"></span>
+            <div style="height: 44px; border-radius: 22px; background: #FFFFFF; margin-top: 12px"></div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{isDoc}}" hint-placeholder-val="{{false}}">
+        <div style="padding: 24px 32px; max-width: 760px; display: flex; flex-direction: column; gap: 10px">
+          <span style="height: 22px; width: 60%; border-radius: 5px; background: #DADDE2"></span>
+          <sc-for list="{{lines}}" as="l" hint-placeholder-count="10"><span style="height: 10px; border-radius: 4px; background: #E6E8EC; width: {{l.w}}"></span></sc-for>
+        </div>
+      </sc-if>
+      <div style="position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); padding: 6px 12px; border-radius: 14px; background: rgba(21,23,28,0.8); color: #FFFFFF; font-size: 12px; white-space: nowrap">{{cur.caption}}</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: "yt", hov: null };
+  }
+  renderVals() {
+    const st = this.state;
+    const P = {
+      home: "M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+      todo: "M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11",
+      cal: "M7 3v4M17 3v4M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z",
+      browser: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3c2.5 2.5 3.8 5.5 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.5-3.8-9S9.5 5.5 12 3z",
+      edo: "M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5M9 13h6M9 17h6",
+      tg: "M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z",
+      wa: "M21 12a9 9 0 0 1-13.5 7.8L3 21l1.2-4.5A9 9 0 1 1 21 12zM8 12h.01M12 12h.01M16 12h.01",
+      ig: "M4 7h3l2-3h6l2 3h3v13H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+      yt: "M3 5h18v14H3zM10 9l5 3-5 3z"
+    };
+    const tint = { tg: "#2B6CB0", wa: "#1F8A52", ig: "#B83280", yt: "#C4282E", lex: "#1D4ED8", g: "#475467" };
+    const tabKeys = ["tg", "wa", "yt", "lex", "g"];
+    const N = (key, label, o) => {
+      o = o || {};
+      const isTab = tabKeys.indexOf(key) >= 0;
+      const on = isTab ? st.tab === key : key === "browser";
+      return {
+        label, d: P[key], div: !!o.div, badge: o.badge || "", hasBadge: !!o.badge,
+        pressed: on ? "true" : "false", tip: st.hov === key, tipText: o.badge ? label + " · " + o.badge + " ta yangi" : label,
+        style: "position:relative;width:44px;height:44px;border:0;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;" + (on ? "background:#22304D;color:#FFFFFF;" : (st.hov === key ? "background:#1A2335;color:#FFFFFF;" : "background:transparent;color:#C9CED8;")),
+        iconBox: "width:26px;height:26px;display:flex;align-items:center;justify-content:center;" + (tint[key] ? "border-radius:7px;color:#FFFFFF;background:" + tint[key] + ";" : ""),
+        badgeStyle: "position:absolute;top:2px;right:0;min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:9px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #111827;color:#FFFFFF;background:" + (o.red ? "#C4282E" : "#2A3550") + ";",
+        pick: () => { if (isTab) this.setState({ tab: key }); },
+        enter: () => this.setState({ hov: key }), leave: () => this.setState({ hov: null })
+      };
+    };
+    const nav = [N("home", "Bosh sahifa"), N("todo", "Vazifalarim", { badge: "5" }), N("cal", "Kalendar"), N("browser", "Brauzer"), N("edo", "Hujjat aylanishi", { badge: "4", div: true }), N("tg", "Telegram", { badge: "12", red: true, div: true }), N("wa", "WhatsApp", { badge: "3", red: true }), N("ig", "Instagram"), N("yt", "YouTube")];
+    const info = {
+      tg: { name: "Telegram", url: "web.telegram.org", badge: "12", caption: "web.telegram.org — rasmiy veb-versiya", chat: true },
+      wa: { name: "WhatsApp", url: "web.whatsapp.com", badge: "3", caption: "web.whatsapp.com — telefon QR orqali bir marta ulanadi", chat: true },
+      yt: { name: "YouTube", url: "youtube.com/watch?v=…", caption: "youtube.com — «rasm ichida rasm» bilan boshqa ishga oʻtsa ham davom etadi" },
+      lex: { name: "Lex.uz — Mehnat kodeksi", url: "lex.uz/docs/…", caption: "lex.uz — tab uxlagan edi, bosilganda oʻsha joydan tiklandi", sleep: true },
+      g: { name: "Google", url: "google.com/search?q=…", caption: "Google — manzil satri orqali qidiruv" }
+    };
+    const tabBase = "height:36px;flex:0 1 170px;min-width:110px;display:flex;align-items:center;gap:8px;padding:0 10px;border:0;border-radius:10px 10px 0 0;font:inherit;font-size:13px;cursor:pointer;color:#15171C;box-sizing:border-box;";
+    const T = (k, group) => {
+      const sel = st.tab === k, i = info[k];
+      return {
+        name: i.name, badge: i.badge || "", hasBadge: !!i.badge && !sel, sleep: !!i.sleep && !sel,
+        sel: sel ? "true" : "false",
+        style: tabBase + "box-shadow:inset 0 3px 0 " + group + ";" + (sel ? "background:#FFFFFF;font-weight:600;" : "background:transparent;") + (i.sleep && !sel ? "opacity:0.6;" : ""),
+        dot: "width:10px;height:10px;border-radius:3px;flex:none;background:" + tint[k] + ";",
+        pick: () => this.setState({ tab: k })
+      };
+    };
+    const lbl = (c) => "align-self:center;flex:none;font-size:11px;font-weight:700;letter-spacing:0.04em;padding:2px 8px;margin:0 2px 6px 6px;border-radius:6px;color:#FFFFFF;background:" + c + ";";
+    const tabGroups = [
+      { name: "Muloqot", label: lbl("#2B6CB0"), tabs: [T("tg", "#2B6CB0"), T("wa", "#2B6CB0"), T("yt", "#2B6CB0")] },
+      { name: "Ish", label: lbl("#6941C6"), tabs: [T("lex", "#6941C6"), T("g", "#6941C6")] }
+    ];
+    const cur = info[st.tab];
+    const isWa = st.tab === "wa";
+    const chats = [0, 1, 2, 3, 4, 5, 6, 7].map((i) => ({ row: "display:flex;align-items:center;gap:12px;height:60px;padding:0 8px;border-radius:10px;" + (i === 0 ? (isWa ? "background:#E7F4EC;" : "background:#E8EEFC;") : "") }));
+    return {
+      nav, tabGroups, cur, chats,
+      isYt: st.tab === "yt", isChat: !!cur.chat, isDoc: st.tab === "lex" || st.tab === "g",
+      chatBg: "flex:1;padding:22px 28px;display:flex;flex-direction:column;gap:12px;justify-content:flex-end;background:" + (isWa ? "#EFEAE2" : "#EEF1F5") + ";",
+      me1: "align-self:flex-end;width:36%;height:40px;border-radius:14px;background:" + (isWa ? "#D3EEDC" : "#DCE6FB") + ";",
+      rows: [1, 2, 3, 4, 5].map(() => ({})),
+      lines: ["100%", "94%", "97%", "60%", "100%", "90%", "95%", "48%", "100%", "86%"].map((w) => ({ w }))
+    };
+  }
+}
+</script>
+</body>
+</html>
