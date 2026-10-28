@@ -29,7 +29,7 @@ Tekshiruv usullari: Vitest (desktop 138, server 41), Rust `cargo test` (4), Play
 - ✅ Salomlashuv, xulosa jumlasi, 5 koʻrsatkich, vazifani belgilash (optimistik, xatoda qaytadi)
 - ✅ Oflayn tasma, keshdan koʻrsatish, qaytganda yangilanish
 - ✅ «Bugungi jadval» — foydalanuvchining iCal (.ics) kalendaridan (Google/Outlook); ulanmagan boʻlsa aniq holat; SSRF himoyasi va 16 test
-- 🟡 «Xabarlar», «Oylik reja %», «Kelgan vaqt» — server manbasi yoʻq, «Namuna maʼlumot» belgisi bilan
+- 🟢 «Xabarlar» (ochiq brauzer tablaridagi oʻqilmagan), «Oylik reja %» (oylik rejadan bajarilgan vazifalar), «Ishni boshlagan vaqt» (ilova bugungi birinchi ochilishi) — haqiqiy maʼlumot; «Namuna» belgisi faqat demo rejimdagi kalendarda
 
 ## Vazifalar
 - ✅ «ertaga 10:00 hisobot !yuqori @Karimov #ishreja» → toʻgʻri; quickAdd 32 test

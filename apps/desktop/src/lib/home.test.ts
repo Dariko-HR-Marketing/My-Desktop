@@ -6,6 +6,7 @@ import {
   dueLabel,
   greeting,
   nextEventTime,
+  planProgress,
   resolveActionUrl,
   summarySentence,
   todayTasks,
@@ -126,5 +127,25 @@ describe('nextEventTime', () => {
     expect(nextEventTime([ev(9), ev(14), ev(16)], now)).toBe('14:00');
     expect(nextEventTime([ev(9), ev(0, true)], now)).toBeNull();
     expect(nextEventTime([], now)).toBeNull();
+  });
+});
+
+describe('planProgress', () => {
+  const inMonth = (day: number, source: Task['source'], status: Task['status'] = 'TODO') =>
+    task({ source, status, dueAt: at(day, 10) });
+  it('counts only plan tasks due this month', () => {
+    const tasks = [
+      inMonth(3, 'PLAN', 'DONE'),
+      inMonth(10, 'PLAN', 'DONE'),
+      inMonth(20, 'PLAN'),
+      inMonth(25, 'PLAN', 'CANCELLED'),
+      inMonth(5, 'PERSONAL', 'DONE'),
+      task({ source: 'PLAN', dueAt: new Date(2026, 10, 2).toISOString() }),
+      task({ source: 'PLAN' }),
+    ];
+    expect(planProgress(tasks, now)).toEqual({ done: 2, total: 3, percent: 67 });
+  });
+  it('is zero without plan tasks', () => {
+    expect(planProgress([], now)).toEqual({ done: 0, total: 0, percent: 0 });
   });
 });

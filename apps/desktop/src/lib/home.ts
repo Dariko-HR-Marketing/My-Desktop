@@ -119,3 +119,26 @@ export function nextEventTime(
     .sort((a, b) => a.start.localeCompare(b.start))[0];
   return next ? formatTime(new Date(next.start)) : null;
 }
+
+/** Monthly work plan: tasks that come from the plan and are due this month, and how many are done. */
+export function planProgress(
+  tasks: Task[],
+  now: Date,
+): { done: number; total: number; percent: number } {
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime();
+  const items = tasks.filter(
+    (x) =>
+      x.source === 'PLAN' &&
+      x.status !== 'CANCELLED' &&
+      x.dueAt &&
+      new Date(x.dueAt).getTime() >= monthStart &&
+      new Date(x.dueAt).getTime() < monthEnd,
+  );
+  const done = items.filter((x) => x.status === 'DONE').length;
+  return {
+    done,
+    total: items.length,
+    percent: items.length === 0 ? 0 : Math.round((done / items.length) * 100),
+  };
+}

@@ -1,8 +1,8 @@
+import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   CalendarDays,
   CheckCircle2,
-  Mail,
   MessageCircle,
   Send,
   TriangleAlert,
@@ -13,8 +13,8 @@ import { Button, Card, Chip, EmptyState, Skeleton } from '../../components';
 import { dueLabel, isOverdue, resolveActionUrl, todayTasks, attentionTasks } from '../../lib/home';
 import { formatTime } from '../../lib/format';
 import { t, tf } from '../../lib/i18n';
-import { SAMPLE_MESSAGES, type SampleMessage } from '../../lib/sample';
-import { useBrowser } from '../../state/browser';
+import { appByKey } from '../browser/networks';
+import { selectUnreadByApp, useBrowser } from '../../state/browser';
 import { useSession } from '../../state/session';
 import { useData, type Slice } from '../../state/data';
 
@@ -151,37 +151,54 @@ export function TodayTasksCard({ tasks, now }: { tasks: Slice<Task[]>; now: Date
   );
 }
 
-const MSG_ICON: Record<SampleMessage['app'], { icon: LucideIcon; color: string; to: string }> = {
-  telegram: { icon: Send, color: 'var(--app-telegram)', to: '/browser?app=telegram' },
-  whatsapp: { icon: MessageCircle, color: 'var(--app-whatsapp)', to: '/browser?app=whatsapp' },
-  mail: { icon: Mail, color: 'var(--app-mail)', to: '/browser' },
-};
+const MESSENGERS: { key: 'telegram' | 'whatsapp'; icon: LucideIcon }[] = [
+  { key: 'telegram', icon: Send },
+  { key: 'whatsapp', icon: MessageCircle },
+];
 
+/** Shown on blocks that are demo-only (demo mode); real blocks never carry it. */
 export function SampleMarker() {
   return <Chip>{t('home.sample')}</Chip>;
 }
 
-/** Messages have no server source yet, so this block shows sample data and says so. */
+/**
+ * Unread messages come from the messenger tabs of the internal browser (their page titles, "(12) Telegram"),
+ * so the numbers are real, but only for messengers that have been opened in this app.
+ */
 export function MessagesCard() {
+  const tabs = useBrowser((s) => s.tabs);
+  const unread = useMemo(() => selectUnreadByApp(tabs), [tabs]);
   return (
-    <Card title={t('home.messages')} action={<SampleMarker />}>
+    <Card title={t('home.messages')}>
       <ul className="list">
-        {SAMPLE_MESSAGES.map((m) => {
-          const { icon: Icon, color, to } = MSG_ICON[m.app];
+        {MESSENGERS.map(({ key, icon: Icon }) => {
+          const app = appByKey(key)!;
+          const opened = tabs.some((x) => x.appKey === key);
+          const count = unread[key] ?? 0;
           return (
-            <li key={m.app} className="list__row">
+            <li key={key} className="list__row">
               <span
                 className="nav-item__tile app-tile"
-                style={{ background: color }}
+                style={{ background: app.color }}
                 aria-hidden="true"
               >
                 <Icon size={18} strokeWidth={1.8} />
               </span>
-              <Link to={to} className="list__main list__link">
-                <span className="list__title">{m.from}</span>
-                <span className="t-caption">{m.count > 0 ? m.text : t('home.messages.none')}</span>
+              <Link to={`/browser?app=${key}`} className="list__main list__link">
+                <span className="list__title">{t(app.name)}</span>
+                <span className="t-caption">
+                  {!opened
+                    ? t('home.messages.notOpened')
+                    : count > 0
+                      ? tf('home.messages.new', { n: count })
+                      : t('home.messages.none')}
+                </span>
               </Link>
-              {m.count > 0 && <Chip tone="danger">{tf('home.messages.new', { n: m.count })}</Chip>}
+              {count > 0 ? (
+                <Chip tone="danger">{count}</Chip>
+              ) : !opened ? (
+                <span className="btn btn--secondary">{t('home.attention.open')}</span>
+              ) : null}
             </li>
           );
         })}

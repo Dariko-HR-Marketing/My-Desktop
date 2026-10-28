@@ -1,21 +1,21 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FilePlus2, Globe, Plus } from 'lucide-react';
 import { Card, Kpi, Skeleton } from '../../components';
-import { formatDate } from '../../lib/format';
-import { greeting, nextEventTime, resolveActionUrl, summarySentence } from '../../lib/home';
-import { t } from '../../lib/i18n';
-import { SAMPLE_ARRIVAL, SAMPLE_PLAN_PERCENT } from '../../lib/sample';
+import { formatDate, formatTime } from '../../lib/format';
+import {
+  greeting,
+  nextEventTime,
+  planProgress,
+  resolveActionUrl,
+  summarySentence,
+} from '../../lib/home';
+import { t, tf } from '../../lib/i18n';
+import { firstOpenToday } from '../../lib/workday';
 import { useNow } from '../../lib/useNow';
 import { selectStats, useData } from '../../state/data';
 import { useSession } from '../../state/session';
-import {
-  AttentionCard,
-  MessagesCard,
-  SampleMarker,
-  ScheduleCard,
-  TodayTasksCard,
-  WidgetsCard,
-} from './blocks';
+import { AttentionCard, MessagesCard, ScheduleCard, TodayTasksCard, WidgetsCard } from './blocks';
 import './home.css';
 
 const WEEKDAYS = ['Yakshanba', 'Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba'];
@@ -27,6 +27,8 @@ export function HomePage() {
   const dashboard = useData((s) => s.dashboard);
   const stats = selectStats({ tasks, dashboard }, now);
   const calendar = useData((s) => s.calendar.data);
+  const plan = planProgress(tasks.data ?? [], now);
+  const started = useMemo(() => firstOpenToday(), []);
   const meetingTime = nextEventTime(calendar?.items ?? [], now);
   const signature = dashboard.data?.signals.find((s) => s.label === 'Imzo kutmoqda');
   const loading = !stats && (tasks.status === 'loading' || tasks.status === 'idle');
@@ -96,19 +98,19 @@ export function HomePage() {
           </Link>
           <Kpi
             label={t('home.kpi.plan')}
-            value={`${SAMPLE_PLAN_PERCENT}%`}
-            progress={SAMPLE_PLAN_PERCENT}
-            hint={<SampleMarker />}
+            value={plan.total === 0 ? '–' : `${plan.percent}%`}
+            progress={plan.percent}
+            hint={
+              plan.total === 0
+                ? t('home.kpi.planNone')
+                : tf('home.kpi.planOf', { done: plan.done, total: plan.total })
+            }
           />
           <Kpi
             label={t('home.kpi.arrival')}
-            value={<span className="mono">{SAMPLE_ARRIVAL}</span>}
+            value={<span className="mono">{formatTime(started)}</span>}
             tone="success"
-            hint={
-              <>
-                <span>{t('home.kpi.onTime')}</span> <SampleMarker />
-              </>
-            }
+            hint={t('home.kpi.arrivalHint')}
           />
         </div>
       )}
