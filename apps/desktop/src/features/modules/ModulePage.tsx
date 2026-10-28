@@ -1,7 +1,7 @@
+import { Suspense } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Lock } from 'lucide-react';
-import { Button, Card, EmptyState } from '../../components';
-import { PlaceholderPage } from '../../app/PlaceholderPage';
+import { Button, Card, EmptyState, ErrorBoundary, Skeleton } from '../../components';
 import { t } from '../../lib/i18n';
 import { useSession } from '../../state/session';
 import { MODULES } from './registry';
@@ -27,5 +27,24 @@ export function ModulePage() {
       </Card>
     );
   }
-  return <PlaceholderPage icon={mod.icon} title={t(mod.name)} lead={t('page.module.lead')} />;
+  const Component = mod.component;
+  // A failure inside one module must not take the rest of the app down.
+  return (
+    <ErrorBoundary
+      fallback={(reset) => (
+        <Card>
+          <EmptyState
+            icon={Lock}
+            title={t('state.error')}
+            description={t('page.module.crashed')}
+            actions={<Button onClick={reset}>{t('common.retry')}</Button>}
+          />
+        </Card>
+      )}
+    >
+      <Suspense fallback={<Skeleton height={240} radius={12} />}>
+        <Component />
+      </Suspense>
+    </ErrorBoundary>
+  );
 }

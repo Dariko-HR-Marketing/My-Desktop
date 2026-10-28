@@ -12,3 +12,4 @@ export { Switch } from './Switch';
 export { Tabs } from './Tabs';
 export { Tooltip } from './Tooltip';
 export { ToastHost } from './Toast';
+export { ErrorBoundary } from './ErrorBoundary';

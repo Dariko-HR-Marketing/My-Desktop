@@ -147,3 +147,6 @@ export type ServerMessage =
   | { type: 'task.changed'; payload: Task }
   | { type: 'task.deleted'; payload: { id: string } }
   | { type: 'settings.changed'; payload: UserSettings };
+
+export * from './edo.js';
+export { buildEdoData, edoSignals } from './edoDemo.js';

@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify';
+import { httpError } from '../errors.js';
 import { WidgetUnavailableError } from '../services/widgets.js';
 import { collectSignals } from '../modules/registry.js';
 import type { Deps } from '../app.js';
@@ -46,6 +47,17 @@ export function catalogRoutes(app: FastifyInstance, { store, widgets, adapters, 
     auth,
     widget(() => widgets.weather()),
   );
+
+  // Module screens: GET /api/modules/:key/data. 404 for unknown modules, 403 when the role may not use it.
+  app.get('/api/modules/:key/data', auth, async (req) => {
+    const { key } = req.params as { key: string };
+    const module = (await store.catalog.modules()).find((m) => m.key === key);
+    const adapter = adapters.find((a) => a.key === key);
+    if (!module || !adapter?.data) throw httpError(404, 'not_found', 'Modul topilmadi');
+    if (!module.roles.includes(req.user.role))
+      throw httpError(403, 'forbidden', 'Bu modulga ruxsat yoʻq');
+    return adapter.data({ userId: req.user.sub, role: req.user.role });
+  });
 
   app.get('/api/dashboard', auth, async (req): Promise<DashboardInfo> => {
     const at = now();

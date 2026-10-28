@@ -52,6 +52,7 @@ const uz = {
   'page.browser.title': 'Brauzer',
   'page.browser.lead': 'Ichki brauzer 6-bosqichda qoʻshiladi.',
   'page.module.lead': 'Modul ekranlari 8-bosqichda qoʻshiladi.',
+  'page.module.crashed': 'Modulda xatolik yuz berdi. Qolgan boʻlimlar ishlashda davom etadi.',
   'page.module.unknown': 'Modul topilmadi',
   'page.module.unknownLead': 'Bunday modul mavjud emas yoki sizga yoqilmagan.',
   'page.login.title': 'Kirish',

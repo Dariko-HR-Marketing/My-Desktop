@@ -53,7 +53,7 @@ export function CommandPalette() {
   const [filter, setFilter] = useState<PaletteFilter>('all');
   const [active, setActive] = useState(0);
   const tasks = useData((s) => s.tasks.data);
-  const docs = useEdoDocs();
+  const docs = useEdoDocs(open);
 
   const sections = useMemo(
     () => buildPalette(query, { tasks: tasks ?? [], docs }, filter),
@@ -85,15 +85,13 @@ export function CommandPalette() {
     switch (action.type) {
       case 'createTask': {
         const p = action.parsed;
-        useData
-          .getState()
-          .createTask({
-            title: p.title,
-            dueAt: p.dueAt,
-            priority: p.priority ?? undefined,
-            assignee: p.assignee,
-            list: p.list,
-          });
+        useData.getState().createTask({
+          title: p.title,
+          dueAt: p.dueAt,
+          priority: p.priority ?? undefined,
+          assignee: p.assignee,
+          list: p.list,
+        });
         useToast.getState().push(t('palette.created'));
         break;
       }

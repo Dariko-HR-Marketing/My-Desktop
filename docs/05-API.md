@@ -76,6 +76,7 @@ interface ModuleSignal { moduleKey; label; count: number; tone: 'info'|'warning'
 |---|---|---|
 | GET | `/api/catalog/apps` | `{ items: AppLink[] }` (order boʻyicha) |
 | GET | `/api/catalog/modules` | `{ items: ModuleInfo[] }` — faqat foydalanuvchi roliga ruxsat etilganlar |
+| GET | `/api/modules/:key/data` | Modul ekranlari uchun maʼlumot (`edo` → `EdoData`, `packages/shared/src/edo.ts`) · 404 — modul yoki adapter yoʻq · 403 — rol ruxsat etilmagan |
 | GET | `/api/widgets/currency` | `{ items: CurrencyRate[] (USD, EUR, RUB, KZT, CNY), fetchedAt, stale, source: 'Markaziy bank' }` · 503 |
 | GET | `/api/widgets/weather` | `{ city, temperature, weatherCode, description, tomorrowMax, fetchedAt, stale }` · 503 |
 

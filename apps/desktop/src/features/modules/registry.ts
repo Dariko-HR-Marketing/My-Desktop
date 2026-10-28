@@ -1,3 +1,4 @@
+import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
 import { FileText, type LucideIcon } from 'lucide-react';
 import type { Role } from '@ish-maydoni/shared';
 import type { MessageKey } from '../../lib/i18n';
@@ -9,6 +10,8 @@ export interface DesktopModule {
   subtitle: MessageKey;
   icon: LucideIcon;
   roles: Role[];
+  /** Lazily loaded so a module's code is only fetched when it is opened. */
+  component: LazyExoticComponent<ComponentType>;
 }
 
 export const MODULES: DesktopModule[] = [
@@ -18,6 +21,7 @@ export const MODULES: DesktopModule[] = [
     subtitle: 'module.edo.sub',
     icon: FileText,
     roles: ['EMPLOYEE', 'MANAGER', 'ADMIN'],
+    component: lazy(() => import('./edo/EdoModule')),
   },
 ];
 

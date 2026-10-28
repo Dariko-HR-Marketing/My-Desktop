@@ -6,7 +6,7 @@ import websocket from '@fastify/websocket';
 import { loadConfig, type Config } from './config.js';
 import { errorHandler } from './errors.js';
 import { authenticate } from './plugins/auth.js';
-import { defaultAdapters, type ModuleAdapter } from './modules/registry.js';
+import { makeEdoAdapter, type ModuleAdapter } from './modules/registry.js';
 import { RealtimeHub } from './services/realtime.js';
 import { createWidgets, type FetchLike, type Widgets } from './services/widgets.js';
 import { createMemoryStore } from './store/memory.js';
@@ -44,7 +44,7 @@ export async function buildApp(opts: AppOptions = {}) {
     store: opts.store ?? createMemoryStore({ bcryptRounds: config.BCRYPT_ROUNDS }),
     hub: new RealtimeHub(),
     widgets: createWidgets(opts.fetch ?? ((url, init) => fetch(url, init)), now),
-    adapters: opts.adapters ?? defaultAdapters,
+    adapters: opts.adapters ?? [makeEdoAdapter(now)],
     now,
   };
 

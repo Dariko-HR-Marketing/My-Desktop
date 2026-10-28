@@ -1,32 +1,20 @@
-import type { ModuleSignal, Role } from '@ish-maydoni/shared';
+import { buildEdoData, edoSignals, type ModuleSignal, type Role } from '@ish-maydoni/shared';
 
 export interface ModuleAdapter {
   key: string;
   signals(ctx: { userId: string; role: Role }): Promise<ModuleSignal[]>;
+  /** Module-specific payload for its screens (GET /api/modules/:key/data). */
+  data?(ctx: { userId: string; role: Role }): Promise<unknown>;
 }
 
 /** Demo adapter for the document workflow module; replaced when the real EDO API is available. */
-export const edoAdapter: ModuleAdapter = {
+export const makeEdoAdapter = (now: () => Date = () => new Date()): ModuleAdapter => ({
   key: 'edo',
-  async signals() {
-    return [
-      {
-        moduleKey: 'edo',
-        label: 'Imzo kutmoqda',
-        count: 4,
-        tone: 'warning',
-        url: 'module://edo/documents',
-      },
-      {
-        moduleKey: 'edo',
-        label: 'Muddati oʻtgan',
-        count: 2,
-        tone: 'danger',
-        url: 'module://edo/control',
-      },
-    ];
-  },
-};
+  signals: async () => edoSignals(now()),
+  data: async () => buildEdoData(now()),
+});
+
+export const edoAdapter = makeEdoAdapter();
 
 export const defaultAdapters: ModuleAdapter[] = [edoAdapter];
 
