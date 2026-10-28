@@ -4,3 +4,4 @@ target
 docs/prototypes
 package-lock.json
 docs
+apps/desktop/src/styles/tokens.css

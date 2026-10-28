@@ -66,6 +66,8 @@
       "navActive": "#22304D",
       "navHover": "#1A2335",
       "navDivider": "#263042",
+      "navTextActive": "#FFFFFF",
+      "onSolid": "#FFFFFF",
       "overlay": "rgba(17,24,39,0.32)",
       "focusRing": "#1D4ED8",
       "skeleton": "#E6E8EC"
@@ -102,6 +104,8 @@
       "navActive": "#22304D",
       "navHover": "#1A2335",
       "navDivider": "#20252F",
+      "navTextActive": "#FFFFFF",
+      "onSolid": "#FFFFFF",
       "overlay": "rgba(0,0,0,0.5)",
       "focusRing": "#7FA2FF",
       "skeleton": "#2A2E37"
