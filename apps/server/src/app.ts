@@ -58,7 +58,7 @@ export async function buildApp(opts: AppOptions = {}) {
     origin: config.CORS_ORIGINS,
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   });
-  await app.register(rateLimit, { max: 300, timeWindow: '1 minute' });
+  await app.register(rateLimit, { max: config.RATE_LIMIT_MAX, timeWindow: '1 minute' });
   await app.register(jwt, { secret: config.JWT_SECRET });
   await app.register(websocket, { options: { maxPayload: 64 * 1024 } });
   app.decorate('authenticate', authenticate);

@@ -17,6 +17,8 @@ const schema = z.object({
         .filter(Boolean),
     ),
   JWT_EXPIRES_IN: z.string().default('12h'),
+  RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(300),
+  LOGIN_RATE_MAX: z.coerce.number().int().min(1).default(10),
   BCRYPT_ROUNDS: z.coerce.number().int().min(4).max(15).default(12),
   SEED_ADMIN_PASSWORD: z.string().min(10).optional(),
 });

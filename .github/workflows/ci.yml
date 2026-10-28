@@ -36,3 +36,24 @@ jobs:
         working-directory: apps/desktop/src-tauri
       - run: cargo test
         working-directory: apps/desktop/src-tauri
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: node
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx -w @ish-maydoni/server prisma generate
+      - run: npx playwright install --with-deps chromium
+        working-directory: apps/desktop
+      - run: npm run e2e -w @ish-maydoni/desktop
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces
+          path: apps/desktop/test-results
+          retention-days: 7

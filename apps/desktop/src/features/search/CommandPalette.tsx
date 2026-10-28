@@ -76,6 +76,14 @@ export function CommandPalette() {
     };
   }, [open]);
 
+  // Esc must work even in the first frame, before focus has moved into the dialog
+  useEffect(() => {
+    if (!open) return;
+    const onEsc = (e: globalThis.KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    document.addEventListener('keydown', onEsc);
+    return () => document.removeEventListener('keydown', onEsc);
+  }, [open, setOpen]);
+
   useEffect(() => setActive(items.findIndex((i) => i.action.type !== 'disabled') || 0), [items]);
 
   if (!open) return null;
