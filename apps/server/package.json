@@ -11,7 +11,8 @@
     "create-user": "tsx scripts/create-user.ts",
     "seed": "tsx prisma/seed.ts",
     "prisma:generate": "prisma generate",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "smoke": "tsx scripts/smoke.ts"
   },
   "dependencies": {
     "@fastify/cors": "^10.1.0",

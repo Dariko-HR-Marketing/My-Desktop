@@ -46,6 +46,15 @@ cd deploy && docker compose --env-file .env up -d --build api
 
 `api` konteyneri ishga tushganda `prisma migrate deploy` ni oʻzi bajaradi, shuning uchun yangi migratsiyalar (`0002_task_assignee_list`, `0003_settings_extra`) avtomatik qoʻllanadi. Natijani tekshirish: `curl -fsS https://my-desk.tajriba24.uz/health`.
 
+**Deploydan keyingi tekshiruv.** Barcha asosiy endpointlarni (kirish, vazifa CRUD, sozlamalar, modul maʼlumoti, WebSocket) tekshiradi va hech qanday izoh qoldirmaydi:
+
+```bash
+SMOKE_URL=https://my-desk.tajriba24.uz SMOKE_LOGIN=admin SMOKE_STORE=postgres \
+SMOKE_PASSWORD='<admin paroli>' npm run smoke -w @ish-maydoni/server
+```
+
+Parol faqat muhit oʻzgaruvchisida beriladi. Migratsiya 0002/0003 qoʻllanmagan boʻlsa, tegishli qadam aniq xabar bilan yiqiladi.
+
 **Avtomatik yangilash (ixtiyoriy).** `.github/workflows/deploy-server.yml` `main` ga push boʻlganda serverga rsync + `docker compose up -d --build` qiladi. Uning uchun GitHub → Settings → Secrets → Actions: `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY` (parolsiz ED25519 deploy kaliti), `DOMAIN`. Workflow serverdagi papka tuzilmasiga (`/opt/my-desktop`) bogʻliq: agar server boshqacha tuzilgan boʻlsa, workflowdagi yoʻllarni moslang.
 
 **Xavfsizlik.** Admin paroli va boshqa sirlar chat yoki repozitoriyga yozilmaydi; `deploy/.env` faqat serverda turadi. Birinchi kirishdan keyin admin parolini almashtiring.
