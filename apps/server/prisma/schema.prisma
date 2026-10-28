@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  EMPLOYEE
+  MANAGER
+  ADMIN
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  NORMAL
+  HIGH
+}
+
+enum TaskSource {
+  PLAN
+  MANAGER
+  PERSONAL
+  MODULE
+}
+
+enum NotificationCategory {
+  WORK
+  MESSAGE
+  SYSTEM
+}
+
+enum AppCategory {
+  MESSENGER
+  SOCIAL
+  VIDEO
+  WORK
+  GOV
+  SEARCH
+}
+
+model User {
+  id            String         @id @default(uuid())
+  login         String         @unique
+  fullName      String
+  position      String         @default("")
+  department    String         @default("")
+  role          Role           @default(EMPLOYEE)
+  passwordHash  String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  tasks         Task[]
+  notifications Notification[]
+  settings      UserSettings?
+}
+
+model Task {
+  id          String       @id @default(uuid())
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  title       String
+  notes       String?
+  source      TaskSource   @default(PERSONAL)
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(NORMAL)
+  dueAt       DateTime?
+  assignedBy  String?
+  externalRef String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  completedAt DateTime?
+
+  @@index([userId, status])
+  @@index([userId, dueAt])
+}
+
+model Notification {
+  id          String               @id @default(uuid())
+  user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  category    NotificationCategory
+  title       String
+  body        String
+  actionLabel String?
+  actionUrl   String?
+  readAt      DateTime?
+  createdAt   DateTime             @default(now())
+
+  @@index([userId, readAt])
+}
+
+model UserSettings {
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String   @id
+  theme        String   @default("system")
+  density      String   @default("comfortable")
+  language     String   @default("uz-Latn")
+  pinnedApps   String[] @default(["telegram", "whatsapp", "instagram", "youtube"])
+  navCollapsed Boolean  @default(false)
+  updatedAt    DateTime @updatedAt
+}
+
+model AppLink {
+  key       String      @id
+  name      String
+  url       String
+  category  AppCategory
+  color     String
+  mandatory Boolean     @default(false)
+  order     Int         @default(0)
+}
+
+model Module {
+  key         String @id
+  name        String
+  description String
+  roles       Role[]
+  version     String @default("0.1.0")
+}

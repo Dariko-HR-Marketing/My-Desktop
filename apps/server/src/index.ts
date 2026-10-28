@@ -1,5 +1,9 @@
 import { buildApp } from './app.js';
+import { loadConfig } from './config.js';
+import { createStore } from './store/index.js';
 
-const port = Number(process.env.PORT ?? 8080);
-const app = buildApp();
-await app.listen({ port, host: '0.0.0.0' });
+const config = loadConfig();
+const store = await createStore(config);
+const app = await buildApp({ config, store, logger: true });
+
+await app.listen({ port: config.PORT, host: config.HOST });
