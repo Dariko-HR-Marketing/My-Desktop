@@ -16,6 +16,7 @@ Talab: Node.js 22 (`.nvmrc`), Rust (faqat Tauri uchun).
 
 ```bash
 npm install
+npx -w @ish-maydoni/server prisma generate   # bir marta: Prisma klienti
 npm run dev:server     # API: http://localhost:8080
 npm run dev:desktop    # UI brauzerda: http://localhost:1420
 npm run tauri:dev      # desktop ilova

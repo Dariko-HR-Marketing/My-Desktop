@@ -14,6 +14,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Generate Prisma client
+        run: npx -w @ish-maydoni/server prisma generate
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
