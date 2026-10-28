@@ -9,12 +9,16 @@ const isoDate = z
   .datetime({ offset: true })
   .transform((s) => new Date(s));
 
+const label = z.string().trim().min(1).max(100);
+
 const createBody = z.object({
   title: z.string().trim().min(1).max(500),
   notes: z.string().max(10_000).nullish(),
   source: z.enum(TASK_SOURCES).optional(),
   priority: z.enum(TASK_PRIORITIES).optional(),
   dueAt: isoDate.nullish(),
+  assignee: label.nullish(),
+  list: label.nullish(),
 });
 
 const patchBody = z
@@ -24,6 +28,8 @@ const patchBody = z
     status: z.enum(TASK_STATUSES),
     priority: z.enum(TASK_PRIORITIES),
     dueAt: isoDate.nullable(),
+    assignee: label.nullable(),
+    list: label.nullable(),
   })
   .partial()
   .strict()
@@ -58,6 +64,8 @@ export function taskRoutes(app: FastifyInstance, { store, hub }: Deps) {
       source: body.source,
       priority: body.priority,
       dueAt: body.dueAt ?? null,
+      assignee: body.assignee ?? null,
+      list: body.list ?? null,
     });
     hub.publish(req.user.sub, { type: 'task.changed', payload: task });
     return reply.code(201).send(task);

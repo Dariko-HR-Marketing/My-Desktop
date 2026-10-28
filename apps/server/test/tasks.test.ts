@@ -137,3 +137,44 @@ describe('tasks', () => {
     expect(ids).not.toContain(aTask.id);
   });
 });
+
+describe('task assignee and list', () => {
+  it('stores @assignee and #list on create and patch', async () => {
+    const app = await makeApp();
+    const { headers } = await login(app);
+    const created = await app.inject({
+      method: 'POST',
+      url: '/api/tasks',
+      headers,
+      payload: { title: 'Hisobot', assignee: 'Karimov', list: 'ishreja' },
+    });
+    expect(created.json()).toMatchObject({ assignee: 'Karimov', list: 'ishreja' });
+    const id = created.json().id;
+    const patched = await app.inject({
+      method: 'PATCH',
+      url: `/api/tasks/${id}`,
+      headers,
+      payload: { assignee: null, list: 'boshqa' },
+    });
+    expect(patched.json()).toMatchObject({ assignee: null, list: 'boshqa' });
+    const blank = await app.inject({
+      method: 'POST',
+      url: '/api/tasks',
+      headers,
+      payload: { title: 'x', list: '  ' },
+    });
+    expect(blank.statusCode).toBe(400);
+  });
+
+  it('defaults to null', async () => {
+    const app = await makeApp();
+    const { headers } = await login(app);
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/tasks',
+      headers,
+      payload: { title: 'a' },
+    });
+    expect(res.json()).toMatchObject({ assignee: null, list: null });
+  });
+});

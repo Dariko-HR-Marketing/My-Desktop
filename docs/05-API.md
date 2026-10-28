@@ -21,7 +21,7 @@ type NotificationCategory = 'WORK' | 'MESSAGE' | 'SYSTEM';
 
 interface User { id; login; fullName; position; department; role: Role }
 interface Task { id; title; notes: string|null; source; status; priority; dueAt: string|null;
-  assignedBy: string|null; externalRef: string|null; createdAt; updatedAt; completedAt: string|null }
+  assignedBy: string|null; assignee: string|null; list: string|null; externalRef: string|null; createdAt; updatedAt; completedAt: string|null }
 interface NotificationItem { id; category; title; body; actionLabel: string|null; actionUrl: string|null;
   readAt: string|null; createdAt }
 interface UserSettings { theme: 'light'|'dark'|'system'; density: 'comfortable'|'compact';
@@ -54,8 +54,8 @@ interface ModuleSignal { moduleKey; label; count: number; tone: 'info'|'warning'
 | Metod | Yoʻl | Tana / soʻrov | Javob |
 |---|---|---|---|
 | GET | `/api/tasks` | `?status=TODO,IN_PROGRESS&dueBefore=<iso>` | `{ items: Task[] }` (muddat boʻyicha, muddatsizlar oxirida) |
-| POST | `/api/tasks` | `{ title (1–500), notes?, source?, priority?, dueAt? }` | 201 `Task` |
-| PATCH | `/api/tasks/:id` | kamida bitta: `title, notes, status, priority, dueAt` | `Task` (`status=DONE` → `completedAt` qoʻyiladi) |
+| POST | `/api/tasks` | `{ title (1–500), notes?, source?, priority?, dueAt?, assignee?, list? }` | 201 `Task` |
+| PATCH | `/api/tasks/:id` | kamida bitta: `title, notes, status, priority, dueAt, assignee, list` | `Task` (`status=DONE` → `completedAt` qoʻyiladi) |
 | DELETE | `/api/tasks/:id` | — | 204 |
 
 ### Bildirishnomalar 🔒

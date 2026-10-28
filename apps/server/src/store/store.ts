@@ -23,6 +23,8 @@ export interface NewTask {
   priority?: TaskPriority;
   dueAt?: Date | null;
   assignedBy?: string | null;
+  assignee?: string | null;
+  list?: string | null;
   externalRef?: string | null;
 }
 
@@ -32,6 +34,8 @@ export interface TaskPatch {
   status?: TaskStatus;
   priority?: TaskPriority;
   dueAt?: Date | null;
+  assignee?: string | null;
+  list?: string | null;
 }
 
 export interface NewNotification {

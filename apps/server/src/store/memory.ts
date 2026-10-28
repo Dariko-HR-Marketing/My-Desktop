@@ -73,6 +73,8 @@ export function createMemoryStore(opts: MemoryStoreOptions = {}): Store {
       priority: input.priority ?? 'NORMAL',
       dueAt: input.dueAt ? input.dueAt.toISOString() : null,
       assignedBy: input.assignedBy ?? null,
+      assignee: input.assignee ?? null,
+      list: input.list ?? null,
       externalRef: input.externalRef ?? null,
       createdAt: t,
       updatedAt: t,
@@ -199,6 +201,8 @@ export function createMemoryStore(opts: MemoryStoreOptions = {}): Store {
           ...(patch.dueAt !== undefined && {
             dueAt: patch.dueAt ? patch.dueAt.toISOString() : null,
           }),
+          ...(patch.assignee !== undefined && { assignee: patch.assignee }),
+          ...(patch.list !== undefined && { list: patch.list }),
           completedAt: completed ? completed.toISOString() : null,
           updatedAt: at.toISOString(),
         };

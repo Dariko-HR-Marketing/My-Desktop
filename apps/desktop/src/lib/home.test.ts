@@ -23,6 +23,8 @@ const task = (over: Partial<Task>): Task => ({
   priority: 'NORMAL',
   dueAt: null,
   assignedBy: null,
+  assignee: null,
+  list: null,
   externalRef: null,
   createdAt: at(1, 0),
   updatedAt: at(1, 0),

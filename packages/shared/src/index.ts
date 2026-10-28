@@ -38,6 +38,10 @@ export interface Task {
   priority: TaskPriority;
   dueAt: string | null;
   assignedBy: string | null;
+  /** Executor named in quick-add (`@name`). */
+  assignee: string | null;
+  /** List the task belongs to (`#name`). */
+  list: string | null;
   externalRef: string | null;
   createdAt: string;
   updatedAt: string;

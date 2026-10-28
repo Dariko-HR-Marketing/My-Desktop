@@ -16,6 +16,8 @@ const toTask = (r: TaskRow): Task => ({
   priority: r.priority,
   dueAt: r.dueAt?.toISOString() ?? null,
   assignedBy: r.assignedBy,
+  assignee: r.assignee,
+  list: r.list,
   externalRef: r.externalRef,
   createdAt: r.createdAt.toISOString(),
   updatedAt: r.updatedAt.toISOString(),
@@ -95,6 +97,8 @@ export function createPrismaStore(databaseUrl: string): Store {
             priority: input.priority ?? 'NORMAL',
             dueAt: input.dueAt ?? null,
             assignedBy: input.assignedBy ?? null,
+            assignee: input.assignee ?? null,
+            list: input.list ?? null,
             externalRef: input.externalRef ?? null,
           },
         });
@@ -111,6 +115,8 @@ export function createPrismaStore(databaseUrl: string): Store {
             ...(patch.status !== undefined && { status: patch.status }),
             ...(patch.priority !== undefined && { priority: patch.priority }),
             ...(patch.dueAt !== undefined && { dueAt: patch.dueAt }),
+            ...(patch.assignee !== undefined && { assignee: patch.assignee }),
+            ...(patch.list !== undefined && { list: patch.list }),
             completedAt: completedAtFor(patch.status, current.completedAt, new Date()),
           },
         });

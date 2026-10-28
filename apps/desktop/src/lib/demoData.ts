@@ -43,6 +43,8 @@ export function demoTasks(now: Date): Task[] {
     priority,
     dueAt: due === null ? null : hours(now, due),
     assignedBy: source === 'MANAGER' ? 'Dilshod Rahimov' : null,
+    assignee: null,
+    list: null,
     externalRef: null,
     createdAt: now.toISOString(),
     updatedAt: now.toISOString(),

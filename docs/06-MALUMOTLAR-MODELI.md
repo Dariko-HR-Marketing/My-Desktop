@@ -37,6 +37,8 @@ model Task {
   priority    TaskPriority @default(NORMAL)
   dueAt       DateTime?
   assignedBy  String?
+  assignee    String?      // tez yozishdagi @ijrochi
+  list        String?      // tez yozishdagi #roʻyxat
   externalRef String?      // masalan: "edo:doc:03-12/458"
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
