@@ -21,7 +21,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Without the deploy secrets this workflow is a no-op instead of a red build on every push.
+      - name: Check deploy secrets
+        id: gate
+        env:
+          KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          HOST: ${{ secrets.SSH_HOST }}
+          USER_: ${{ secrets.SSH_USER }}
+          DOMAIN: ${{ secrets.DOMAIN }}
+        run: |
+          if [ -n "$KEY" ] && [ -n "$HOST" ] && [ -n "$USER_" ] && [ -n "$DOMAIN" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Deploy skipped: set SSH_HOST, SSH_USER, SSH_PRIVATE_KEY and DOMAIN in Settings → Secrets → Actions."
+          fi
+
       - name: Install SSH key
+        if: steps.gate.outputs.ready == 'true'
         run: |
           install -m 700 -d ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
@@ -29,6 +46,7 @@ jobs:
           ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
 
       - name: Upload to server
+        if: steps.gate.outputs.ready == 'true'
         run: |
           rsync -az --delete \
             --filter 'protect deploy/.env' \
@@ -42,11 +60,13 @@ jobs:
             ./ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/my-desktop/"
 
       - name: Build and restart
+        if: steps.gate.outputs.ready == 'true'
         run: |
           ssh "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
             "cd /opt/my-desktop/deploy && docker compose --env-file .env up -d --build && docker image prune -f"
 
       - name: Health check
+        if: steps.gate.outputs.ready == 'true'
         run: |
           for i in $(seq 1 12); do
             if curl -fsS "https://${{ secrets.DOMAIN }}/health"; then exit 0; fi
