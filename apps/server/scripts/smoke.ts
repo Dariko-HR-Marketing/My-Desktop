@@ -170,6 +170,21 @@ await step('calendar today (migration 0004)', async () => {
   return r.json.configured ? `events=${r.json.items.length}` : 'not configured';
 });
 
+await step('integrations (migration 0005, INTEGRATIONS_KEY)', async () => {
+  const r = await call('GET', '/api/integrations/providers', token);
+  assert(
+    r.status === 200 && r.json.items?.length > 0,
+    `status ${r.status} (migration 0005 applied?)`,
+  );
+  assert(
+    r.json.enabled === true,
+    'INTEGRATIONS_KEY is not set on the server (run deploy/update-server.sh)',
+  );
+  const list = await call('GET', '/api/integrations', token);
+  assert(list.status === 200 && Array.isArray(list.json.items), `list ${list.status}`);
+  return `providers=${r.json.items.length}`;
+});
+
 await step('notifications list', async () => {
   const r = await call('GET', '/api/notifications', token);
   assert(r.status === 200 && Array.isArray(r.json.items), `status ${r.status}`);

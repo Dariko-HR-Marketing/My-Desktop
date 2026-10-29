@@ -5,6 +5,7 @@ import type { UserRecord } from '../domain/types.js';
 import { APP_CATALOG, DEFAULT_SETTINGS, MODULE_CATALOG } from './catalog.js';
 import {
   completedAtFor,
+  type IntegrationRow,
   type NewNotification,
   type NewTask,
   type Store,
@@ -60,6 +61,7 @@ export function createMemoryStore(opts: MemoryStoreOptions = {}): Store {
   const tasks = new Map<string, Task & { userId: string }>();
   const notifications = new Map<string, NotificationItem & { userId: string }>();
   const settings = new Map<string, UserSettings>();
+  const integrations = new Map<string, IntegrationRow>();
 
   const makeTask = (userId: string, input: NewTask): Task & { userId: string } => {
     const t = now().toISOString();
@@ -258,6 +260,30 @@ export function createMemoryStore(opts: MemoryStoreOptions = {}): Store {
         const next = { ...(await store.settings.get(userId)), ...patch };
         settings.set(userId, next);
         return next;
+      },
+    },
+    integrations: {
+      async get(ownerId, providerKey) {
+        const r = integrations.get(`${ownerId}:${providerKey}`);
+        return r ? { ...r } : null;
+      },
+      async upsert(ownerId, providerKey, dataEnc, at) {
+        integrations.set(`${ownerId}:${providerKey}`, {
+          ownerId,
+          providerKey,
+          dataEnc,
+          lastTestOk: null,
+          lastTestAt: null,
+          lastTestMessage: null,
+          updatedAt: at,
+        });
+      },
+      async remove(ownerId, providerKey) {
+        return integrations.delete(`${ownerId}:${providerKey}`);
+      },
+      async setTest(ownerId, providerKey, ok, message, at) {
+        const r = integrations.get(`${ownerId}:${providerKey}`);
+        if (r) Object.assign(r, { lastTestOk: ok, lastTestAt: at, lastTestMessage: message });
       },
     },
     catalog: {

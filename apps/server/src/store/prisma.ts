@@ -186,6 +186,37 @@ export function createPrismaStore(databaseUrl: string): Store {
         return readSettings(r);
       },
     },
+    integrations: {
+      async get(ownerId, providerKey) {
+        return db.integration.findUnique({
+          where: { ownerId_providerKey: { ownerId, providerKey } },
+        });
+      },
+      async upsert(ownerId, providerKey, dataEnc, at) {
+        const fresh = {
+          dataEnc,
+          lastTestOk: null,
+          lastTestAt: null,
+          lastTestMessage: null,
+          updatedAt: at,
+        };
+        await db.integration.upsert({
+          where: { ownerId_providerKey: { ownerId, providerKey } },
+          create: { ownerId, providerKey, ...fresh },
+          update: fresh,
+        });
+      },
+      async remove(ownerId, providerKey) {
+        const r = await db.integration.deleteMany({ where: { ownerId, providerKey } });
+        return r.count > 0;
+      },
+      async setTest(ownerId, providerKey, ok, message, at) {
+        await db.integration.updateMany({
+          where: { ownerId, providerKey },
+          data: { lastTestOk: ok, lastTestAt: at, lastTestMessage: message },
+        });
+      },
+    },
     catalog: {
       async apps() {
         const rows = await db.appLink.findMany({ orderBy: { order: 'asc' } });

@@ -63,6 +63,7 @@ if [ ! -f "$ENV_FILE" ]; then
 DOMAIN=$DOMAIN
 POSTGRES_PASSWORD=$(openssl rand -hex 32)
 JWT_SECRET=$(openssl rand -hex 48)
+INTEGRATIONS_KEY=$(openssl rand -base64 32)
 SEED_ADMIN_PASSWORD=$ADMIN_PASSWORD
 JWT_EXPIRES_IN=12h
 CORS_ORIGINS=tauri://localhost,http://tauri.localhost

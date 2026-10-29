@@ -83,3 +83,7 @@ Keyin GitHub Secrets ga: `TAURI_SIGNING_PRIVATE_KEY` (`updater.key` mazmuni), `T
 Sozlamalar → Kalendar: Google Calendar yoki Outlook'dagi **maxfiy iCal (.ics) manzili** kiritiladi. Server uni oʻqiydi (5 daqiqa kesh), takrorlanuvchi uchrashuvlarni ochadi (`RRULE`, `EXDATE`, koʻchirilgan nusxalar) va Meet/Zoom/Teams havolasi boʻlsa «Qoʻshilish» tugmasini koʻrsatadi. Ochiq kutubxonalar: [`node-ical`](https://github.com/jens-maus/node-ical) (+ `rrule`), [`undici`](https://github.com/nodejs/undici).
 
 Xavfsizlik: manzilni foydalanuvchi kiritgani uchun server uni faqat `https://`, ommaviy domen nomi, loginsiz va ichki tarmoqqa olib bormaydigan holda yuklaydi (har bir DNS javobi va qayta yoʻnaltirish tekshiriladi, hajm 2 MB, vaqt 8 s). Manzilning oʻzi maxfiy: u jurnalga yozilmaydi va faqat egasining sozlamalarida saqlanadi.
+
+## Integratsiyalar va sunʼiy intellekt
+
+Sozlamalar → **Integratsiyalar**: Claude, GPT, Gemini, Mistral, OpenRouter, oʻz modelingiz, Telegram, Slack, GitHub, Notion, hujjat aylanishi, ixtiyoriy REST va webhook. Kalitlar serverda AES-256-GCM bilan shifrlanadi (`INTEGRATIONS_KEY`, `deploy/update-server.sh` uni avtomatik yaratadi), ilovaga qaytarilmaydi. Barcha AI modellari uchun yagona `POST /api/ai/complete`. Batafsil: [docs/11-INTEGRATSIYALAR.md](docs/11-INTEGRATSIYALAR.md).

@@ -389,3 +389,25 @@ button.sidebar__group-title {
 .sidebar[data-mode='rail'] .nav-item__dot {
   display: block;
 }
+
+/* Touch devices and phones: every control gets a finger-sized target (≥ 44 px, the platform guideline). */
+@media (max-width: 599px), (pointer: coarse) {
+  .avatar {
+    width: 44px;
+    height: 44px;
+  }
+  .segmented button,
+  .group__toggle,
+  .quick__input,
+  .card__head a {
+    min-height: 44px;
+  }
+  .card__head a {
+    display: inline-flex;
+    align-items: center;
+  }
+  input.check {
+    width: 24px;
+    height: 24px;
+  }
+}

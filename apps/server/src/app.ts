@@ -10,11 +10,20 @@ import { makeEdoAdapter, type ModuleAdapter } from './modules/registry.js';
 import { RealtimeHub } from './services/realtime.js';
 import { createWidgets, type FetchLike, type Widgets } from './services/widgets.js';
 import { createCalendarService, type CalendarService } from './services/calendar.js';
-import { createSafeTextFetcher, type TextFetcher } from './services/ssrf.js';
+import {
+  createSafeHttp,
+  createSafeTextFetcher,
+  type HttpClient,
+  type TextFetcher,
+} from './services/ssrf.js';
+import { createIntegrationService, type IntegrationService } from './services/integrations.js';
+import { createWebhookEmitter, type WebhookEmitter } from './services/webhook.js';
+import { createVault } from './services/vault.js';
 import { createMemoryStore } from './store/memory.js';
 import type { Store } from './store/store.js';
 import { authRoutes } from './routes/auth.js';
 import { catalogRoutes } from './routes/catalog.js';
+import { integrationRoutes } from './routes/integrations.js';
 import { notificationRoutes } from './routes/notifications.js';
 import { realtimeRoutes } from './routes/realtime.js';
 import { settingsRoutes } from './routes/settings.js';
@@ -26,6 +35,9 @@ export interface Deps {
   hub: RealtimeHub;
   widgets: Widgets;
   calendar: CalendarService;
+  integrations: IntegrationService;
+  webhook: WebhookEmitter;
+  http: HttpClient;
   adapters: ModuleAdapter[];
   now: () => Date;
 }
@@ -36,6 +48,8 @@ export interface AppOptions {
   fetch?: FetchLike;
   /** Downloads a calendar (.ics) text; replaced in tests. */
   calendarFetch?: TextFetcher;
+  /** Outbound HTTP for integrations (tests, AI); replaced in tests. */
+  http?: HttpClient;
   adapters?: ModuleAdapter[];
   now?: () => Date;
   logger?: boolean;
@@ -44,9 +58,16 @@ export interface AppOptions {
 export async function buildApp(opts: AppOptions = {}) {
   const config = opts.config ?? loadConfig({ NODE_ENV: 'test', BCRYPT_ROUNDS: '4' });
   const now = opts.now ?? (() => new Date());
+  const store = opts.store ?? createMemoryStore({ bcryptRounds: config.BCRYPT_ROUNDS });
+  const http = opts.http ?? createSafeHttp();
+  const vault = config.INTEGRATIONS_KEY ? createVault(config.INTEGRATIONS_KEY) : null;
+  const integrations = createIntegrationService({ store, vault, http, now });
   const deps: Deps = {
     config,
-    store: opts.store ?? createMemoryStore({ bcryptRounds: config.BCRYPT_ROUNDS }),
+    store,
+    integrations,
+    webhook: createWebhookEmitter({ integrations, http, now }),
+    http,
     hub: new RealtimeHub(),
     widgets: createWidgets(opts.fetch ?? ((url, init) => fetch(url, init)), now),
     calendar: createCalendarService(opts.calendarFetch ?? createSafeTextFetcher(), now),
@@ -62,7 +83,7 @@ export async function buildApp(opts: AppOptions = {}) {
 
   await app.register(cors, {
     origin: config.CORS_ORIGINS,
-    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   });
   await app.register(rateLimit, { max: config.RATE_LIMIT_MAX, timeWindow: '1 minute' });
   await app.register(jwt, { secret: config.JWT_SECRET });
@@ -81,6 +102,7 @@ export async function buildApp(opts: AppOptions = {}) {
   notificationRoutes(app, deps);
   settingsRoutes(app, deps);
   catalogRoutes(app, deps);
+  integrationRoutes(app, deps);
   await app.register(async (scope) => realtimeRoutes(scope, deps));
 
   app.addHook('onClose', () => deps.store.close());

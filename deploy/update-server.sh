@@ -16,6 +16,12 @@ echo "Now at $(git rev-parse --short HEAD): $(git log -1 --pretty=%s)"
 echo "== Rebuilding api =="
 cd deploy
 test -f .env || { echo "deploy/.env is missing — create it first (see .env.example)"; exit 1; }
+# Integration keys (AI, Telegram…) are encrypted with INTEGRATIONS_KEY; create it once, never overwrite.
+if ! grep -q '^INTEGRATIONS_KEY=.' .env; then
+  sed -i '/^INTEGRATIONS_KEY=/d' .env
+  echo "INTEGRATIONS_KEY=$(openssl rand -base64 32)" >> .env
+  echo "Created INTEGRATIONS_KEY in deploy/.env — back this file up."
+fi
 docker compose --env-file .env up -d --build api
 
 echo "== Waiting for health =="

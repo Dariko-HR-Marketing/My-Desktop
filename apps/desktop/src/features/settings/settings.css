@@ -167,3 +167,6 @@
   flex-direction: column;
   min-width: 0;
 }
+.integ__bad {
+  color: var(--danger);
+}

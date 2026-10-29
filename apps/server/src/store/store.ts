@@ -11,6 +11,17 @@ import type {
 } from '@ish-maydoni/shared';
 import type { UserRecord } from '../domain/types.js';
 
+export interface IntegrationRow {
+  ownerId: string;
+  providerKey: string;
+  /** Encrypted JSON of the credential fields (see services/vault.ts). */
+  dataEnc: string;
+  lastTestOk: boolean | null;
+  lastTestAt: Date | null;
+  lastTestMessage: string | null;
+  updatedAt: Date;
+}
+
 export interface TaskFilter {
   statuses?: TaskStatus[];
   dueBefore?: Date;
@@ -71,6 +82,19 @@ export interface Store {
   settings: {
     get(userId: string): Promise<UserSettings>;
     update(userId: string, patch: Partial<UserSettings>): Promise<UserSettings>;
+  };
+  integrations: {
+    get(ownerId: string, providerKey: string): Promise<IntegrationRow | null>;
+    /** Replaces the credentials and clears the last test result. */
+    upsert(ownerId: string, providerKey: string, dataEnc: string, at: Date): Promise<void>;
+    remove(ownerId: string, providerKey: string): Promise<boolean>;
+    setTest(
+      ownerId: string,
+      providerKey: string,
+      ok: boolean,
+      message: string,
+      at: Date,
+    ): Promise<void>;
   };
   catalog: {
     apps(): Promise<AppLink[]>;

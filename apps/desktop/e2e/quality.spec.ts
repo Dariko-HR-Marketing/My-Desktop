@@ -13,6 +13,7 @@ const PAGES = [
   '/settings',
   '/settings?s=menu',
   '/settings?s=calendar',
+  '/settings?s=integrations',
   '/m/edo',
   '/m/edo/documents?doc=doc-1',
   '/m/edo/control',
@@ -41,10 +42,24 @@ test('login page passes axe too', async ({ page }) => {
   expect(violations.map((v) => v.id)).toEqual([]);
 });
 
-for (const width of [1440, 1100, 800, 390]) {
-  test(`no horizontal scroll at ${width}px`, async ({ page }) => {
-    test.setTimeout(60_000);
-    await page.setViewportSize({ width, height: 900 });
+// small phones, a landscape phone (short height), tablets, laptop, full HD and a wide monitor
+const SIZES: [number, number][] = [
+  [2560, 1300],
+  [1920, 1000],
+  [1440, 900],
+  [1100, 900],
+  [1024, 700],
+  [800, 900],
+  [768, 1024],
+  [667, 375],
+  [390, 844],
+  [360, 740],
+  [320, 640],
+];
+for (const [width, height] of SIZES) {
+  test(`no horizontal scroll at ${width}x${height}`, async ({ page }) => {
+    test.setTimeout(90_000);
+    await page.setViewportSize({ width, height });
     await signIn(page);
     for (const path of PAGES) {
       await page.goto(path);
@@ -57,10 +72,13 @@ for (const width of [1440, 1100, 800, 390]) {
 test('navigation mode follows the window width', async ({ page }) => {
   await signIn(page);
   for (const [width, mode] of [
+    [2560, 'full'],
     [1440, 'full'],
     [1100, 'rail'],
     [800, 'rail'],
+    [599, 'bottom'],
     [390, 'bottom'],
+    [320, 'bottom'],
   ] as const) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/');

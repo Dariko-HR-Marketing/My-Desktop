@@ -87,6 +87,7 @@ export function createApi(opts: ApiOptions) {
     get: <T>(path: string) => request<T>('GET', path),
     post: <T>(path: string, body?: unknown, o?: { anonymous?: boolean }) =>
       request<T>('POST', path, { body: body ?? {}, anonymous: o?.anonymous }),
+    put: <T>(path: string, body: unknown) => request<T>('PUT', path, { body }),
     patch: <T>(path: string, body: unknown) => request<T>('PATCH', path, { body }),
     delete: <T = void>(path: string) => request<T>('DELETE', path),
   };

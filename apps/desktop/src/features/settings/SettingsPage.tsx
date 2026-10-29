@@ -19,6 +19,7 @@ import { useSession } from '../../state/session';
 import { APPS, appByKey } from '../browser/networks';
 import { useBrowser } from '../../state/browser';
 import { useToast } from '../../state/toast';
+import { IntegrationsSection } from './IntegrationsSection';
 import './settings.css';
 
 const SECTIONS = [
@@ -26,6 +27,7 @@ const SECTIONS = [
   'menu',
   'notifications',
   'calendar',
+  'integrations',
   'language',
   'browser',
   'system',
@@ -537,6 +539,7 @@ export function SettingsPage() {
         </div>
       </div>
     ),
+    integrations: <IntegrationsSection />,
     system: <SystemSection />,
   };
 

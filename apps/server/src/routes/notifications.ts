@@ -22,7 +22,7 @@ const createBody = z.object({
   actionUrl: z.string().max(2000).nullish(),
 });
 
-export function notificationRoutes(app: FastifyInstance, { store, hub }: Deps) {
+export function notificationRoutes(app: FastifyInstance, { store, hub, webhook }: Deps) {
   const auth = { preHandler: app.authenticate };
 
   app.get('/api/notifications', auth, async (req) => {
@@ -50,6 +50,7 @@ export function notificationRoutes(app: FastifyInstance, { store, hub }: Deps) {
       throw httpError(404, 'not_found', 'Xodim topilmadi');
     const item = await store.notifications.create(body.userId, body);
     hub.publish(body.userId, { type: 'notification.created', payload: item });
+    webhook.emit('notification.created', { userId: body.userId, notification: item });
     return reply.code(201).send(item);
   });
 }

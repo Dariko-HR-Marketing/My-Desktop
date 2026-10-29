@@ -128,3 +128,51 @@ export function createSafeTextFetcher(
     throw new Error('too many redirects');
   };
 }
+
+export interface HttpRequest {
+  method: 'GET' | 'POST';
+  url: string;
+  headers?: Record<string, string>;
+  body?: string;
+  timeoutMs?: number;
+}
+export interface HttpResult {
+  status: number;
+  text: string;
+}
+export type HttpClient = (req: HttpRequest) => Promise<HttpResult>;
+
+/**
+ * Outbound calls to services the administrator configured (AI providers, Telegram, a custom REST address…).
+ * Same guards as the calendar download (https only, guarded DNS, size/time limits), and redirects are never followed:
+ * credentials in the headers must not travel to a host the administrator did not enter.
+ */
+export function createSafeHttp(opts: { fetchImpl?: typeof undiciFetch } = {}): HttpClient {
+  const doFetch = opts.fetchImpl ?? undiciFetch;
+  return async (req) => {
+    const url = assertSafeUrl(req.url);
+    const res = await doFetch(url, {
+      method: req.method,
+      redirect: 'manual',
+      dispatcher: guardedAgent,
+      signal: AbortSignal.timeout(req.timeoutMs ?? 10_000),
+      headers: req.headers,
+      body: req.body,
+    });
+    const reader = res.body?.getReader();
+    if (!reader) return { status: res.status, text: '' };
+    const chunks: Uint8Array[] = [];
+    let total = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > MAX_BYTES) {
+        await reader.cancel();
+        throw new Error('response too large');
+      }
+      chunks.push(value);
+    }
+    return { status: res.status, text: Buffer.concat(chunks).toString('utf8') };
+  };
+}

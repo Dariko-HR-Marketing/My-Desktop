@@ -37,6 +37,7 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-12h}
       CORS_ORIGINS: ${CORS_ORIGINS:-tauri://localhost,http://tauri.localhost}
       SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+      INTEGRATIONS_KEY: ${INTEGRATIONS_KEY:-}
 
   caddy:
     image: caddy:2-alpine

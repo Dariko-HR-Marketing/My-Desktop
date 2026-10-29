@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -20,6 +21,8 @@ const schema = z.object({
   RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(300),
   LOGIN_RATE_MAX: z.coerce.number().int().min(1).default(10),
   BCRYPT_ROUNDS: z.coerce.number().int().min(4).max(15).default(12),
+  /** base64 of 32 random bytes; encrypts stored integration keys. Without it integrations stay disabled (503). */
+  INTEGRATIONS_KEY: z.string().optional(),
   SEED_ADMIN_PASSWORD: z.string().min(10).optional(),
 });
 
@@ -35,5 +38,9 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
   }
   // Dev/test fallback is a random per-process secret, never a hardcoded one.
   const secret = parsed.JWT_SECRET ?? `dev-${crypto.randomUUID()}-${crypto.randomUUID()}`;
-  return { ...parsed, JWT_SECRET: secret };
+  // Dev/test: a throwaway key so integrations can be tried locally. Production never invents one (data would be unreadable after restart).
+  const integrationsKey =
+    parsed.INTEGRATIONS_KEY ??
+    (parsed.NODE_ENV === 'production' ? undefined : randomBytes(32).toString('base64'));
+  return { ...parsed, JWT_SECRET: secret, INTEGRATIONS_KEY: integrationsKey };
 }

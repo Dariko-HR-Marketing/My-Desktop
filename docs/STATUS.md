@@ -51,6 +51,18 @@ Tekshiruv usullari: Vitest (desktop 144, server 57), Rust `cargo test` (4), Play
 - ✅ Menyuda bitta qator, 5 yorliq, bosh sahifa signali → yorliq, «Ruxsat yoʻq» holati
 - ⬜ Amallar (imzolash, kelishish) — tashqi tizim va E-IMZO ulangach
 
+## Integratsiyalar va xavfsizlik
+- ✅ Katalog (13 xizmat), shifrlangan saqlash, rol boʻyicha boshqaruv, tekshirish, AI shlyuzi (3 lahja), webhook imzosi; server 23 test, e2e 2 test
+- ✅ Kalit hech qayerda ochiq qaytmaydi (API, xato matni, jurnal) — testlar bilan tekshirilgan
+- ✅ Zaifliklar: `fast-jwt` (critical) va `zod` (high) yangilandi; qolgani — `node-ical`→`uuid` (v3/v5/v6 ishlatilmaydi) va `prisma` CLI (faqat build/migratsiya)
+- 🟡 Serverda `INTEGRATIONS_KEY` va migratsiya 0005 — `deploy/update-server.sh` bilan qoʻllanadi; haqiqiy provayderlarga (OpenAI, Anthropic…) ulanish kalit bilan qoʻlda sinaladi
+- ⬜ OAuth2 oqimi, kalit rotatsiyasi, audit sahifasi (docs/11)
+
+## Adaptivlik
+- ✅ 11 oʻlcham (320×640 … 2560×1300, jumladan telefon gorizontal 667×375): gorizontal scroll yoʻq, barcha sahifalar
+- ✅ Telefon/sensorli ekranda tugmalar ≥ 44 px
+- ✅ axe-core 11 sahifa × 2 tema: 0 buzilish
+
 ## Tezlik (Linux, WebKitGTK, dasturiy render — Windows'da farq qiladi; docs/PERFORMANCE.md)
 - ✅ Oyna ochilishi (kirish sahifasi) ≈ 1,0–1,2 s ≤ 1,5 s
 - ✅ Boʻsh holatda xotira ≈ 217 MB ≤ 250 MB

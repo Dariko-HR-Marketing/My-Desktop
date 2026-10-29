@@ -87,6 +87,14 @@ Tashqi manbalar:
 - Ob-havo: `https://api.open-meteo.com/v1/forecast?latitude=..&longitude=..&current=temperature_2m,weather_code&daily=temperature_2m_max&forecast_days=2&timezone=auto` — kesh 15 daqiqa. WMO kodlari oʻzbekcha tavsifga oʻgiriladi.
 - Tashqi manba ishlamasa — oxirgi kesh `stale: true`; kesh ham yoʻq boʻlsa — 503.
 
+### Integratsiyalar 🔒 (batafsil: `docs/11-INTEGRATSIYALAR.md`)
+- `GET /api/integrations/providers` — katalog va `enabled` (serverda `INTEGRATIONS_KEY` bor-yoʻqligi)
+- `GET /api/integrations` — holatlar (kalit hech qachon qaytmaydi; maydon tafsilotlari faqat boshqaruvchiga)
+- `PUT /api/integrations/:key` `{ fields: {…} }` — saqlash (bo‘sh sir = o‘zgarishsiz); `org` doira faqat ADMIN
+- `DELETE /api/integrations/:key` → 204
+- `POST /api/integrations/:key/test` → `{ ok, message, status }`
+- `GET /api/ai/providers`, `POST /api/ai/complete` — barcha ulangan AI modellari uchun yagona shlyuz
+
 ## WebSocket
 
 `wss://<DOMAIN>/ws?token=<JWT>` (token notoʻgʻri → yopish kodi `4401`, klient qayta urinmaydi).

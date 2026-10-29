@@ -134,3 +134,19 @@ model Module {
   roles       Role[]
   version     String @default("0.1.0")
 }
+
+/// Credentials of an external service. `ownerId` is a user id, or "org" for organisation-wide connections.
+/// `dataEnc` is AES-256-GCM ciphertext of the JSON field map (see services/vault.ts); the key lives only in the server env.
+model Integration {
+  id              String    @id @default(uuid())
+  ownerId         String
+  providerKey     String
+  dataEnc         String
+  lastTestOk      Boolean?
+  lastTestAt      DateTime?
+  lastTestMessage String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([ownerId, providerKey])
+}
