@@ -2,11 +2,11 @@
 
 Belgilar: ✅ avtomatik yoki skript bilan tekshirilgan · 🟡 kodda bor, lekin shu muhitda toʻliq tekshirib boʻlmadi (Windows/macOS yoki haqiqiy server kerak) · ⬜ MVP dan tashqari.
 
-Tekshiruv usullari: Vitest (desktop 138, server 41), Rust `cargo test` (4), Playwright (haqiqiy server + Vite), axe-core (WCAG 2.1 AA), haqiqiy Tauri ilovasi Xvfb ostida (child webview va IPC izolyatsiyasi).
+Tekshiruv usullari: Vitest (desktop 144, server 57), Rust `cargo test` (4), Playwright (haqiqiy server + Vite), axe-core (WCAG 2.1 AA), haqiqiy Tauri ilovasi Xvfb ostida (child webview va IPC izolyatsiyasi).
 
 ## Umumiy
 - ✅ `npm run typecheck`, `npm test`, `npm run build`, `cargo check`, `cargo test` xatosiz
-- 🟡 GitHub Actions CI yashilligi — bu muhitdan koʻrib boʻlmaydi, branch'ga push qilingan
+- ✅ GitHub Actions CI (node, rust, e2e) `main` da yashil
 - ✅ Repozitoriyda parol, kalit, `.env` yoʻq (skan qilingan)
 
 ## Server
@@ -16,7 +16,8 @@ Tekshiruv usullari: Vitest (desktop 138, server 41), Rust `cargo test` (4), Play
 - ✅ Xodim bildirishnoma yubora olmaydi (403); rahbar yuborsa WebSocket orqali ≤ 2 s da keladi
 - ✅ `/api/catalog/modules` xodimga «Rahbar paneli» qaytarmaydi; modul maʼlumoti 403/404 qoidalari
 - ✅ Valyuta/ob-havo: kesh, `stale: true`, 503 (soxta `fetch` bilan); 🟡 haqiqiy CBU/open-meteo bilan serverda tekshirish kerak
-- 🟡 Docker + HTTPS: server qoʻlda joylashtirilgan, `/health` → `ok` (foydalanuvchi tasdigʻi); keyingi migratsiyalar (0002, 0003) hali qoʻllanmagan
+- ✅ Docker + HTTPS: https://my-desk.tajriba24.uz, `/health` → `ok` (postgres); migratsiyalar 0001–0004 qoʻllangan; `npm run smoke` 16/16 oʻtdi (serverda)
+- 🟡 Avto-deploy: GitHub Secrets (`SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY`, `DOMAIN`) kiritilmagan — hozircha `deploy/update-server.sh` bilan qoʻlda
 
 ## Desktop — qobiq va adaptivlik
 - ✅ Menyu: 3 guruh, modul bitta qator, tarmoqlar yigʻiladi, 248 ↔ 72 px

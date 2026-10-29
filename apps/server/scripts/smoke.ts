@@ -161,6 +161,15 @@ await step('module data (edo)', async () => {
   return `documents=${r.json.documents.length}`;
 });
 
+await step('calendar today (migration 0004)', async () => {
+  const r = await call('GET', '/api/calendar/today', token);
+  assert(
+    r.status === 200 && typeof r.json.configured === 'boolean' && Array.isArray(r.json.items),
+    `status ${r.status} (migration 0004 applied?)`,
+  );
+  return r.json.configured ? `events=${r.json.items.length}` : 'not configured';
+});
+
 await step('notifications list', async () => {
   const r = await call('GET', '/api/notifications', token);
   assert(r.status === 200 && Array.isArray(r.json.items), `status ${r.status}`);
